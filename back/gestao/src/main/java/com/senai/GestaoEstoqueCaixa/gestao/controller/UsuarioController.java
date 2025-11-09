@@ -6,7 +6,9 @@ package com.senai.GestaoEstoqueCaixa.gestao.controller;
 
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.enums.UsuarioEnum;
 import com.senai.GestaoEstoqueCaixa.gestao.service.UsuarioService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,28 +37,40 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
-        List<UsuarioResponseDTO> usuarios = usuarioService.listarTodos();
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos(
+            @RequestParam(required = false) String filtro,
+            @RequestParam(required = false) Boolean ativo,
+            @RequestParam(required = false) UsuarioEnum perfil
+    ) {
+        List<UsuarioResponseDTO> usuarios = usuarioService.listarTodos(filtro, ativo, perfil);
         return ResponseEntity.ok(usuarios);
     }
-    
+
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> criar(@RequestBody UsuarioRequestDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> criar(@RequestBody @Valid UsuarioRequestDTO dto) {
         UsuarioResponseDTO criado = usuarioService.criar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
     @PutMapping("/{email}")
-    public ResponseEntity<UsuarioResponseDTO> atualizar(
+    public ResponseEntity<UsuarioResponseDTO> atualizar(@Valid
             @PathVariable String email,
             @RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO atualizado = usuarioService.atualizar(email, dto);
         return ResponseEntity.ok(atualizado);
     }
-    
+
     @PatchMapping("/{email}/deletar")
-    public ResponseEntity<Void> deletar(@PathVariable String email) {
+    public ResponseEntity<Void> deletar(@PathVariable @Valid String email) {
         usuarioService.deletar(email);
         return ResponseEntity.noContent().build();
     }
+
+    /*
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
+        LoginResponseDTO response = usuarioService.login(dto);
+        return ResponseEntity.ok(response);
+    }
+    */
 }

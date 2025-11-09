@@ -98,5 +98,7 @@ public class Produto {
         this.codigo = codigo;
     }
     
-    
+     public boolean isAtivo() {
+        return ativo != null && ativo;
+    }
 }

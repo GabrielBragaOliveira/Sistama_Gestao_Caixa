@@ -11,7 +11,9 @@ import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoExcept
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.ProdutoMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,7 @@ public class ProdutoService {
     public ProdutoService(ProdutoRepository produtoRepository) {
         this.produtoRepository = produtoRepository;
     }
-    
+
     public List<ProdutoResponseDTO> listarTodos() {
         return produtoRepository.findAll()
                 .stream()
@@ -45,38 +47,77 @@ public class ProdutoService {
     public ProdutoResponseDTO buscarPorId(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado com ID: " + id));
+                "Produto não encontrado com ID: " + id));
 
         return produtoMapper.toResponseDTO(produto);
     }
-    
+
     public ProdutoResponseDTO buscarPorCodigo(String codigo) {
         Produto produto = produtoRepository.findByCodigo(codigo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Produto não encontrado com ID: " + codigo));
+                "Produto não encontrado com ID: " + codigo));
 
         return produtoMapper.toResponseDTO(produto);
     }
 
     @Transactional
     public ProdutoResponseDTO criar(ProdutoRequestDTO dto) {
-        Produto produto = ProdutoMapper.toEntity(dto);
-        Produto produtoSalvo = produtoRepository.save(produto);
-        return ProdutoMapper.toResponseDTO(produtoSalvo);
+        Optional<Produto> produtoExistente = produtoRepository.findByCodigo(dto.codigo());
+
+        if (produtoExistente.isPresent()) {
+            Produto produto = produtoExistente.get();
+            if (!produto.isAtivo()) {
+                produto.setCodigo(dto.codigo());
+                produto.setNome(dto.nome());
+                produto.setCategoria(dto.categoria());
+                produto.setQuantidadeEstoque(dto.quantidadeEstoque());
+                produto.setPreco(dto.preco());
+                produto.setAtivo(true);
+
+                produtoRepository.save(produto);
+
+                return produtoMapper.toResponseDTO(produto);
+            } else {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um produto ativo com esse código");
+            }
+        }
+
+        Produto produto = produtoMapper.toEntity(dto);
+        produto.setAtivo(true);
+        Produto produtosSalvo = produtoRepository.save(produto);
+
+        return produtoMapper.toResponseDTO(produtosSalvo);
     }
 
     @Transactional
     public ProdutoResponseDTO atualizar(String codigo, ProdutoRequestDTO dto) {
         Produto produtoExistente = produtoRepository.findByCodigo(codigo)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado com Codigo: " + codigo));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado pelo código: " + codigo));
 
+        if (!produtoExistente.getAtivo()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente produtos ativos podem ser editados.");
+        }
+
+        if (dto.preco().compareTo(BigDecimal.ZERO) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O preço não pode ser negativo.");
+        }
+
+        if (dto.quantidadeEstoque() < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade em estoque não pode ser negativa.");
+        }
+        
+        if (!produtoExistente.getCodigo().equalsIgnoreCase(dto.codigo()) && produtoRepository.existsByCodigo(dto.codigo())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "O código informado já está cadastrado para outro produto.");
+        }
+
+        produtoExistente.setCodigo(dto.codigo());
         produtoExistente.setNome(dto.nome());
         produtoExistente.setCategoria(dto.categoria());
         produtoExistente.setQuantidadeEstoque(dto.quantidadeEstoque());
         produtoExistente.setPreco(dto.preco());
 
         Produto produtoAtualizado = produtoRepository.save(produtoExistente);
-        return ProdutoMapper.toResponseDTO(produtoAtualizado);
+        return produtoMapper.toResponseDTO(produtoAtualizado);
     }
 
     @Transactional

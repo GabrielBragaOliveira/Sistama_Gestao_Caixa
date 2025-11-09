@@ -32,9 +32,6 @@ public record UsuarioRequestDTO (
     String senha,
     
     @NotNull(message = "O perfil é obrigatório.")
-    UsuarioEnum perfil,
-    
-    @NotNull(message = "O campo ativo é obrigatório.")
-    Boolean ativo
+    UsuarioEnum perfil
         
 ) {}

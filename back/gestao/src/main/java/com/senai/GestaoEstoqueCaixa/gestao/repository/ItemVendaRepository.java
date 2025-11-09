@@ -4,8 +4,7 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.repository;
 
-import com.senai.GestaoEstoqueCaixa.gestao.entity.Produto;
-import java.util.Optional;
+import com.senai.GestaoEstoqueCaixa.gestao.entity.ItemVenda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +13,5 @@ import org.springframework.stereotype.Repository;
  * @author Aluno
  */
 @Repository
-public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-
-    Optional<Produto> findById(Long id);
-    Optional<Produto> findByCodigo(String codigo);
-    boolean existsByCodigo(String codigo);
-
+public interface ItemVendaRepository extends JpaRepository<ItemVenda, Long> {
 }

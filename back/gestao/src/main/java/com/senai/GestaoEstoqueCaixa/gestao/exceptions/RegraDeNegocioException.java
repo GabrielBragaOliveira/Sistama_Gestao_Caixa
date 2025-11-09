@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Aluno
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecursoNaoEncontradoException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class RegraDeNegocioException extends RuntimeException {
 
-    public RecursoNaoEncontradoException(String message) {
+    public RegraDeNegocioException(String message) {
         super(message);
     }
 
-    public RecursoNaoEncontradoException(String message, Throwable cause) {
+    public RegraDeNegocioException(String message, Throwable cause) {
         super(message, cause);
     }
 }

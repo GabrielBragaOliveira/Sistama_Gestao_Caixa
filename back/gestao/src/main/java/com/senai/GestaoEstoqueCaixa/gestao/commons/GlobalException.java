@@ -5,6 +5,7 @@
 package com.senai.GestaoEstoqueCaixa.gestao.commons;
 
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RegraDeNegocioException;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class GlobalException {
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
     public ResponseEntity<ErrorResponseSpring> handleRecursoNaoEncontradoException(RecursoNaoEncontradoException ex) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+    
+    @ExceptionHandler(RegraDeNegocioException.class)
+    public ResponseEntity<ErrorResponseSpring> handleRegraDeNegocioException(RegraDeNegocioException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
