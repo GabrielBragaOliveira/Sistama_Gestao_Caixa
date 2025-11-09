@@ -4,6 +4,7 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.service;
 
+import com.senai.GestaoEstoqueCaixa.gestao.dto.LoginRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
@@ -105,10 +106,10 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO atualizar(String email, UsuarioRequestDTO dto) {
-        Usuario usuarioExistente = usuarioRepository.findByEmail(email)
+    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
+        Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado com email: " + email));
+                "Usuário não encontrado com email: " + id));
 
         if (!usuarioExistente.isAtivo()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente usuários ativos podem ser editados.");
@@ -140,18 +141,17 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void deletar(String email) {
-        Usuario usuarioExistente = usuarioRepository.findByEmail(email)
+    public void inativar(Long id) {
+        Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado com email: " + email));
+                "Usuário não encontrado: "));
 
         usuarioExistente.setAtivo(false);
         usuarioRepository.save(usuarioExistente);
     }
 
-    /*
     @Transactional
-    public LoginResponseDTO login(LoginRequestDTO dto) {
+    public UsuarioResponseDTO login(LoginRequestDTO dto) {
         Usuario usuario = usuarioRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha incorretos."));
 
@@ -163,7 +163,6 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha incorretos.");
         }
 
-        return LoginMapper.toResponseDTO(usuario);
+        return usuarioMapper.toResponseDTO(usuario);
     }
-     */
 }

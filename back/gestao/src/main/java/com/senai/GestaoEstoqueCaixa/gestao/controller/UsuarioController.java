@@ -4,6 +4,7 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.controller;
 
+import com.senai.GestaoEstoqueCaixa.gestao.dto.LoginRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.UsuarioEnum;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/usuarios")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin("*")
 public class UsuarioController {
 
     @Autowired
@@ -52,25 +53,30 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
-    @PutMapping("/{email}")
+    @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(@Valid
-            @PathVariable String email,
+            @PathVariable Long id,
             @RequestBody UsuarioRequestDTO dto) {
-        UsuarioResponseDTO atualizado = usuarioService.atualizar(email, dto);
+        UsuarioResponseDTO atualizado = usuarioService.atualizar(id, dto);
         return ResponseEntity.ok(atualizado);
     }
 
-    @PatchMapping("/{email}/deletar")
-    public ResponseEntity<Void> deletar(@PathVariable @Valid String email) {
-        usuarioService.deletar(email);
+    @PatchMapping("/{id}/inativar")
+    public ResponseEntity<Void> inativar(@PathVariable @Valid Long id) {
+        usuarioService.inativar(id);
         return ResponseEntity.noContent().build();
     }
 
-    /*
+    
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
-        LoginResponseDTO response = usuarioService.login(dto);
+    public ResponseEntity<UsuarioResponseDTO> login(@RequestBody LoginRequestDTO dto) {
+        UsuarioResponseDTO response = usuarioService.login(dto);
         return ResponseEntity.ok(response);
     }
-    */
+    
+    @GetMapping("/{id}")
+        public ResponseEntity<UsuarioResponseDTO> buscarId(@PathVariable @Valid Long id) {
+        UsuarioResponseDTO response = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok(response);
+    }
 }

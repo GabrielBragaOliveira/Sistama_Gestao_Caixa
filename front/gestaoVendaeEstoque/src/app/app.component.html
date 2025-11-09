@@ -1,0 +1,12 @@
+<div class="app-layout">
+  <app-side-bar
+    *ngIf="isLayoutVisible()"
+    [role]="userRole"
+    [username]="userName"
+    (logout)="onLogout()"
+  ></app-side-bar>
+
+  <div class="app-content" [class.fullscreen]="!isLayoutVisible()">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+
+<div class="sidebar"[class.fechada]="!sidebarAberta">
+  <div class="toggle-btn" (click)="toggleSidebar()">
+    <i class="pi" [ngClass]="sidebarAberta ? 'pi-angle-left' : 'pi-angle-right'"></i>
+  </div>
+  <div class="sidebar-header">
+    <h2 class="sidebar-title">Menu</h2>
+  </div>
+
+  <div class="sidebar-content">
+    <p-panelMenu [model]="items" [style]="{ width: '100%' }"></p-panelMenu>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <i class="pi pi-user"></i>
+      <span>{{ username }}</span>
+    </div>
+    <button
+      pButton
+      type="button"
+      icon="pi pi-sign-out"
+      label="Sair"
+      class="p-button-danger p-button-sm"
+      (click)="onLogout()">
+    </button>
+  </div>
+</div>
