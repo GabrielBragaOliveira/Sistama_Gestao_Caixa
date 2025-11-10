@@ -44,6 +44,7 @@ export class GestaoUsuarioComponent implements OnInit{
   abrirCadastro = false;
   idEditando: number | null = null;
   isEdicao: boolean = false;
+  private filtroTimeout: any;
 
 
   statusOptionsAtivo = [
@@ -117,6 +118,13 @@ export class GestaoUsuarioComponent implements OnInit{
         this.service.loading.set(false);
       }
     });
+  }
+
+  onFiltroStringChange(): void {
+    clearTimeout(this.filtroTimeout);
+    this.filtroTimeout = setTimeout(() => {
+      this.carregar();
+    }, 500);
   }
 
   novo() : void{

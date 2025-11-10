@@ -16,12 +16,14 @@ export class UsuarioService {
 
     constructor(private http: HttpClient) {}
 
-    listar(params?: { perfil?: string; ativo?: boolean }): Observable<UsuarioResponse[]> {
+  listar(params?: { filtro?: string; perfil?: string; ativo?: boolean }): Observable<UsuarioResponse[]> {
     let httpParams = new HttpParams();
+    if (params?.filtro) httpParams = httpParams.set('filtro', params.filtro);
     if (params?.perfil) httpParams = httpParams.set('perfil', params.perfil);
     if (params?.ativo !== undefined && params?.ativo !== null) {
       httpParams = httpParams.set('ativo', params.ativo);
     }
+    console.log(params)
     return this.http.get<UsuarioResponse[]>(this.baseUrl, { params: httpParams });
   }
 

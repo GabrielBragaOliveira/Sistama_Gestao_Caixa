@@ -30,4 +30,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     String nome, String email, Boolean ativo);
     List<Usuario> findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndPerfilOrderByNomeAsc(
     String nome, String email, UsuarioEnum perfil);
+    List<Usuario> findByAtivoAndPerfilOrderByNomeAsc(Boolean ativo, UsuarioEnum perfil);
+    List<Usuario> findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoAndPerfilOrderByNomeAsc(String nome, String email, Boolean ativo, UsuarioEnum perfil);
 }

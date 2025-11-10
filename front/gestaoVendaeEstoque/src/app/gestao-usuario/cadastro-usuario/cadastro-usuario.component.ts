@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { UsuarioService } from '../../service/UsuarioService';
 import { FormGroup, FormControl, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Perfils } from '../../enum/Perfil';
 import { UsuarioRequest } from '../../modelos/DTOs/UsuarioDTOs';
-import { AuthService } from '../../service/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgIf, CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-cadastro-usuario',
@@ -21,12 +21,12 @@ import { NgIf, CommonModule } from '@angular/common';
     SelectButtonModule,
     InputTextModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
     ],
   templateUrl: './cadastro-usuario.component.html',
   styleUrl: './cadastro-usuario.component.css'
 })
-export class CadastroUsuarioComponent implements OnInit {
+export class CadastroUsuarioComponent implements OnInit, OnChanges {
   @Input() id: number | null = null;
   @Input() isEdicao: boolean = false;
   @Output() fechar = new EventEmitter<boolean>();
@@ -46,7 +46,8 @@ export class CadastroUsuarioComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: UsuarioService,
-    private msg: MessageService
+    private msg: MessageService,
+    private confirm: ConfirmationService
   ) {
     this.formUsuario = this.fb.group({
       nome: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
@@ -64,6 +65,26 @@ export class CadastroUsuarioComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['id'] || changes['isEdicao']) {
+      this.configurarFormulario();
+    }
+  }
+
+  private configurarFormulario(): void {
+    this.formUsuario.reset();
+
+    this.formUsuario.get('senha')?.setValidators([Validators.required]);
+    this.formUsuario.get('senha')?.updateValueAndValidity();
+
+    if (this.isEdicao && this.id) {
+      this.carregarUsuarioParaEdicao();
+      
+      this.formUsuario.get('senha')?.clearValidators();
+      this.formUsuario.get('senha')?.updateValueAndValidity();
+    }
+  }
+
   private carregarUsuarioParaEdicao(): void {
     this.service.loading.set(true);
     this.service.buscarPorId(this.id!).subscribe({
@@ -72,7 +93,7 @@ export class CadastroUsuarioComponent implements OnInit {
           nome: usuario.nome,
           email: usuario.email,
           perfil: usuario.perfil,
-          senha: usuario.senha,
+          senha: usuario.senha, 
         });
         this.service.loading.set(false);
       },
@@ -91,26 +112,26 @@ export class CadastroUsuarioComponent implements OnInit {
         ...raw,
         perfil: raw.perfil as Perfils 
       };
+
       if (this.isEdicao && !raw.senha) {
-        delete (usuario as any).senha;  
+        delete (usuario as any).senha; 
       }
-      if (this.isEdicao && this.id) {
-        this.service.atualizar(this.id, usuario).subscribe({
-          next: () => {
-            this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Funcionário atualizado' }); 
-            this.fechar.emit(true);
-          },
-          error: (err) => this.tratarErroHttp(err)
-        });
-      } else {
-        this.service.criar(usuario).subscribe({
-          next: () => {
-            this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Funcionário cadastrado' });
-            this.cancelar()
-          },
-          error: (err) => this.tratarErroHttp(err)
-        });
-      }
+      const acao = this.isEdicao && this.id 
+        ? this.service.atualizar(this.id!, usuario) 
+        : this.service.criar(usuario);
+      
+      const msgSucesso = this.isEdicao ? 'Funcionário atualizado' : 'Funcionário cadastrado';
+      acao.subscribe({
+        next: () => {
+          this.msg.add({ severity: 'success', summary: 'Sucesso', detail: msgSucesso });
+          if (this.isEdicao) {
+            this.fechar.emit(true); 
+          } else {
+            this.cancelar(); 
+          }
+        },
+        error: (err) => this.tratarErroHttp(err)
+      });
     }
   }
 

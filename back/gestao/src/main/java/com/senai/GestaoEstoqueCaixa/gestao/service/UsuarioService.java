@@ -14,6 +14,7 @@ import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,24 +41,30 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
-        List<Usuario> usuarios = new ArrayList<>();
+    List<Usuario> usuarios;
 
-        if (filtro != null && !filtro.isBlank() && ativo != null) {
-            usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoOrderByNomeAsc(filtro, filtro, ativo);
-        } else if (filtro != null && !filtro.isBlank() && perfil != null) {
-            usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndPerfilOrderByNomeAsc(filtro, filtro, perfil);
-        } else if (ativo != null) {
-            usuarios = usuarioRepository.findByAtivo(ativo);
-        } else if (filtro != null && !filtro.isBlank()) {
-            usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingOrderByNomeAsc(filtro, filtro);
-        } else {
-            usuarios = usuarioRepository.findAll();
-        }
-
-        return usuarios.stream()
-                .map(UsuarioMapper::toResponseDTO)
-                .collect(Collectors.toList());
+    if (filtro != null && !filtro.isBlank() && ativo != null && perfil != null) {
+        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoAndPerfilOrderByNomeAsc(filtro, filtro, ativo, perfil);
+    } else if (filtro != null && !filtro.isBlank() && ativo != null) {
+        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoOrderByNomeAsc(filtro, filtro, ativo);
+    } else if (filtro != null && !filtro.isBlank() && perfil != null) {
+        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndPerfilOrderByNomeAsc(filtro, filtro, perfil);
+    } else if (ativo != null && perfil != null) {
+        usuarios = usuarioRepository.findByAtivoAndPerfilOrderByNomeAsc(ativo, perfil);
+    } else if (ativo != null) {
+        usuarios = usuarioRepository.findByAtivo(ativo);
+    } else if (perfil != null) {
+        usuarios = usuarioRepository.findByPerfil(perfil);
+    } else if (filtro != null && !filtro.isBlank()) {
+        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingOrderByNomeAsc(filtro, filtro);
+    } else {
+        usuarios = usuarioRepository.findAll();
     }
+
+    return usuarios.stream()
+            .map(UsuarioMapper::toResponseDTO)
+            .collect(Collectors.toList());
+}
 
     public UsuarioResponseDTO buscarPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
@@ -75,28 +82,31 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
-        if (dto.nome() == null || dto.nome().isBlank()) {
+        if (dto.nome() == null && dto.nome().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome do usuário é obrigatório.");
         }
-        if (dto.email() == null || dto.email().isBlank()) {
+        if (dto.email() == null && dto.email().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O email do usuário é obrigatório.");
         }
         if (dto.senha() == null || dto.senha().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha do usuário é obrigatória.");
         }
+        Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(dto.email());
 
-        usuarioRepository.findByEmail(dto.email()).ifPresent(usuario -> {
-            if (usuario.isAtivo()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário ativo com este email.");
-            } else {
-
+        if (usuarioExistente.isPresent()) {
+            Usuario usuario = usuarioExistente.get();
+            if (!usuario.isAtivo()) {
                 usuario.setNome(dto.nome());
                 usuario.setSenha(dto.senha());
                 usuario.setPerfil(dto.perfil());
                 usuario.setAtivo(true);
+
                 usuarioRepository.save(usuario);
+                return usuarioMapper.toResponseDTO(usuario);
+            } else {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário ativo com este e-mail.");
             }
-        });
+        }
 
         Usuario usuario = usuarioMapper.toEntity(dto);
         usuario.setAtivo(true);

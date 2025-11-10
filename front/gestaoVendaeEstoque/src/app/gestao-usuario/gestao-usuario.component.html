@@ -12,7 +12,7 @@
   <div class="filters">
     <span>
       <label>nome:</label>
-      <input pInputText type="text" [(ngModel)]="filtroString" placeholder="Ex.: Analista" />
+      <input pInputText type="text" [(ngModel)]="filtroString" placeholder="Ex.: Analista" (input)="onFiltroStringChange()" />
     </span>
 
     <span>
@@ -21,7 +21,8 @@
         [options]="statusOptionsAtivo"
         optionLabel="label"
         optionValue="value"
-        [(ngModel)]="filtroAtivo">
+        [(ngModel)]="filtroAtivo"
+        (onChange)="carregar()">
       </p-selectButton>
     </span>
 
@@ -31,11 +32,11 @@
         [options]="statusOptionsPerfil"
         optionLabel="label"
         optionValue="value"
-        [(ngModel)]="filtroPerfil">
+        [(ngModel)]="filtroPerfil"
+        (onChange)="carregar()">
       </p-selectButton>
     </span>
 
-    <button pButton label="Filtrar" (click)="carregar()"></button>
     <button pButton label="Limpar" class="p-button-secondary" (click)="limparFiltros()"></button>
   </div>
 
