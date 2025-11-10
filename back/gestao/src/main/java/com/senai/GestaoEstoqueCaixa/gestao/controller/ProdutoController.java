@@ -7,6 +7,7 @@ package com.senai.GestaoEstoqueCaixa.gestao.controller;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.ProdutoRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.ProdutoResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.service.ProdutoService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,23 +41,29 @@ public class ProdutoController {
     }
     
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> criar(@RequestBody ProdutoRequestDTO dto) {
+    public ResponseEntity<ProdutoResponseDTO> criar(@RequestBody @Valid ProdutoRequestDTO dto) {
         ProdutoResponseDTO criado = produtoService.criar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
-    @PutMapping("/{codigo}")
-    public ResponseEntity<ProdutoResponseDTO> atualizar(
-            @PathVariable String codigo,
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> atualizar(@Valid
+            @PathVariable Long id,
             @RequestBody ProdutoRequestDTO dto) {
-        ProdutoResponseDTO atualizado = produtoService.atualizar(codigo, dto);
+        ProdutoResponseDTO atualizado = produtoService.atualizar(id, dto);
         return ResponseEntity.ok(atualizado);
     }
     
-    @PatchMapping("/{codigo}/deletar")
-    public ResponseEntity<Void> deletar(@PathVariable String codigo) {
-        produtoService.deletar(codigo);
+    @PatchMapping("/{id}/deletar")
+    public ResponseEntity<Void> inativar(@PathVariable @Valid Long id) {
+        produtoService.inativar(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/{id}")
+        public ResponseEntity<ProdutoResponseDTO> buscarId(@PathVariable @Valid Long id) {
+        ProdutoResponseDTO response = produtoService.buscarPorId(id);
+        return ResponseEntity.ok(response);
     }
 }
 
