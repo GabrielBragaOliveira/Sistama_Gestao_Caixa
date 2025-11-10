@@ -1,0 +1,73 @@
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cardUsuario {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem; 
+  border-top: 4px solid #2ab3a3;
+}
+
+.cardUsuario h2 {
+  text-align: center;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-weight: 600; 
+  font-size: 1.5rem;
+}
+
+.cardUsuario form .p-fluid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.p-field {
+  width: 100%;
+}
+
+.error-message {
+  color: #D32F2F; 
+  font-size: 0.875rem;
+  margin-top: -1rem; 
+  margin-bottom: 0.5rem; 
+  padding-left: 0.25rem;
+}
+
+.perfil-select .p-button {
+  flex-grow: 1;
+}
+
+.botoes-acao {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.botoes-acao .p-button-secondary {
+  background: #6c757d !important;
+  border: none !important;
+}
+
+.botoes-acao .p-button-secondary:hover {
+  background: #5a6268 !important;
+}
+
+@media (max-width: 768px) {
+  .cardUsuario {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cardUsuario h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}

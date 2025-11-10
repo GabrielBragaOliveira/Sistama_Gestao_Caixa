@@ -35,12 +35,12 @@ public class Usuario {
     @Column(name = "senha", nullable = false)  
     private String senha;
     
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "perfil", nullable = false)  
     private UsuarioEnum perfil;
     
     @Column(name = "ativo", nullable = false)
-    private Boolean ativo;
+    private Boolean ativo = true;
 
     public Long getId() {
         return id;
@@ -90,5 +90,7 @@ public class Usuario {
         this.ativo = ativo;
     }
      
-    
+     public boolean isAtivo() {
+        return ativo != null && ativo;
+    }
 }
