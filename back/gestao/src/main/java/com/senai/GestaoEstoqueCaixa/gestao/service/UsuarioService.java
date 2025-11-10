@@ -41,30 +41,17 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
-    List<Usuario> usuarios;
 
-    if (filtro != null && !filtro.isBlank() && ativo != null && perfil != null) {
-        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoAndPerfilOrderByNomeAsc(filtro, filtro, ativo, perfil);
-    } else if (filtro != null && !filtro.isBlank() && ativo != null) {
-        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndAtivoOrderByNomeAsc(filtro, filtro, ativo);
-    } else if (filtro != null && !filtro.isBlank() && perfil != null) {
-        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingAndPerfilOrderByNomeAsc(filtro, filtro, perfil);
-    } else if (ativo != null && perfil != null) {
-        usuarios = usuarioRepository.findByAtivoAndPerfilOrderByNomeAsc(ativo, perfil);
-    } else if (ativo != null) {
-        usuarios = usuarioRepository.findByAtivo(ativo);
-    } else if (perfil != null) {
-        usuarios = usuarioRepository.findByPerfil(perfil);
-    } else if (filtro != null && !filtro.isBlank()) {
-        usuarios = usuarioRepository.findByNomeIgnoreCaseContainingOrEmailIgnoreCaseContainingOrderByNomeAsc(filtro, filtro);
-    } else {
-        usuarios = usuarioRepository.findAll();
+        List<Usuario> usuarios = usuarioRepository.filtrarUsuarios(
+                (filtro != null && !filtro.isBlank()) ? filtro : null,
+                ativo,
+                perfil
+        );
+
+        return usuarios.stream()
+                .map(UsuarioMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
-
-    return usuarios.stream()
-            .map(UsuarioMapper::toResponseDTO)
-            .collect(Collectors.toList());
-}
 
     public UsuarioResponseDTO buscarPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
@@ -175,4 +162,33 @@ public class UsuarioService {
 
         return usuarioMapper.toResponseDTO(usuario);
     }
+
+    /*
+    public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
+    Specification<Usuario> spec = Specification.where(null);
+
+    if (ativo != null) {
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("ativo"), ativo));
+    }
+
+    if (perfil != null) {
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("perfil"), perfil));
+    }
+
+    if (filtro != null && !filtro.isBlank()) {
+        String likeFiltro = "%" + filtro.toLowerCase() + "%";
+        spec = spec.and((root, query, cb) ->
+            cb.or(
+                cb.like(cb.lower(root.get("nome")), likeFiltro),
+                cb.like(cb.lower(root.get("email")), likeFiltro)
+            )
+        );
+    }
+
+    List<Usuario> usuarios = usuarioRepository.findAll(spec, Sort.by("nome").ascending());
+
+    return usuarios.stream()
+        .map(UsuarioMapper::toResponseDTO)
+        .collect(Collectors.toList());
+}*/
 }

@@ -90,9 +90,9 @@ public class ProdutoService {
     }
 
     @Transactional
-    public ProdutoResponseDTO atualizar(String codigo, ProdutoRequestDTO dto) {
-        Produto produtoExistente = produtoRepository.findByCodigo(codigo)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado pelo código: " + codigo));
+    public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO dto) {
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado"));
 
         if (!produtoExistente.getAtivo()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente produtos ativos podem ser editados.");
@@ -121,9 +121,9 @@ public class ProdutoService {
     }
 
     @Transactional
-    public void deletar(String codigo) {
-        Produto produtoExistente = produtoRepository.findByCodigo(codigo)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado com Codigo: " + codigo));
+    public void inativar(Long id) {
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
 
         produtoExistente.setAtivo(false);
         produtoRepository.delete(produtoExistente);
