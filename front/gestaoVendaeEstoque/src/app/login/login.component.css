@@ -95,24 +95,3 @@
     border-radius: 20px 20px 0 0;
   }
 }
-
-.top-loading-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 4px;
-  width: 100%;
-  background: linear-gradient(90deg, #2ab3a3, #4be0ce, #2ab3a3);
-  background-size: 200% 100%;
-  animation: loadingAnimation 1.5s linear infinite;
-  z-index: 9999;
-}
-
-@keyframes loadingAnimation {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}

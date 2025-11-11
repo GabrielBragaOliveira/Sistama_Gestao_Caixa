@@ -12,6 +12,14 @@
   </div>
 
   <div class="sidebar-footer">
+    <div class="theme-switch">
+      <i class="pi pi-sun"></i>
+      <p-inputSwitch 
+        [ngModel]="themeService.theme() === 'dark'"
+        (onChange)="onThemeToggle()">
+      </p-inputSwitch>
+      <i class="pi pi-moon"></i>
+    </div>
     <div class="user-info">
       <i class="pi pi-user"></i>
       <span>{{ username }}</span>

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { UsuarioService } from '../../service/UsuarioService';
+import { ProdutoService } from '../../service/Produto.Service';
 import { FormGroup, FormControl, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Perfils } from '../../enum/Perfil';
-import { UsuarioRequest } from '../../modelos/DTOs/UsuarioDTOs';
+import { ProdutoRequest } from '../../modelos/DTOs/ProdutoDTO';
 import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InputTextModule } from 'primeng/inputtext';
@@ -12,7 +12,7 @@ import { NgIf, CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-cadastro-usuario',
+  selector: 'app-cadastro-estoque',
   standalone: true,
   imports: [
     NgIf,
@@ -22,16 +22,16 @@ import { finalize } from 'rxjs';
     InputTextModule,
     ButtonModule,
     ToastModule,
-    ],
-  templateUrl: './cadastro-usuario.component.html',
-  styleUrl: './cadastro-usuario.component.css'
+  ],
+  templateUrl: './cadastro-estoque.component.html',
+  styleUrl: './cadastro-estoque.component.css'
 })
-export class CadastroUsuarioComponent implements OnInit, OnChanges {
+export class CadastroEstoqueComponent implements OnInit, OnChanges {
   @Input() id: number | null = null;
   @Input() isEdicao: boolean = false;
   @Output() fechar = new EventEmitter<boolean>();
 
-  formUsuario: FormGroup<{
+  formProduto: FormGroup<{
     nome: FormControl<string>; 
     email: FormControl<string>;
     perfil: FormControl<Perfils|''>;
@@ -45,11 +45,11 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private service: UsuarioService,
+    private service: ProdutoService,
     private msg: MessageService,
     private confirm: ConfirmationService
   ) {
-    this.formUsuario = this.fb.group({
+    this.formProduto = this.fb.group({
       nome: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
       email: this.fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
       perfil: this.fb.control<Perfils | ''>('', { validators: [Validators.required], nonNullable: true }),
@@ -59,9 +59,9 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     if (this.isEdicao && this.id) {
-      this.carregarUsuarioParaEdicao();
-      this.formUsuario.get('senha')?.clearValidators();
-      this.formUsuario.get('senha')?.updateValueAndValidity();
+      this.carregarProdutoParaEdicao();
+      this.formProduto.get('senha')?.clearValidators();
+      this.formProduto.get('senha')?.updateValueAndValidity();
     }
   }
 
@@ -72,53 +72,54 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
   }
 
   private configurarFormulario(): void {
-    this.formUsuario.reset();
+    this.formProduto.reset();
 
-    this.formUsuario.get('senha')?.setValidators([Validators.required]);
-    this.formUsuario.get('senha')?.updateValueAndValidity();
+    this.formProduto.get('senha')?.setValidators([Validators.required]);
+    this.formProduto.get('senha')?.updateValueAndValidity();
 
     if (this.isEdicao && this.id) {
-      this.carregarUsuarioParaEdicao();
+      this.carregarProdutoParaEdicao();
       
-      this.formUsuario.get('senha')?.clearValidators();
-      this.formUsuario.get('senha')?.updateValueAndValidity();
+      this.formProduto.get('senha')?.clearValidators();
+      this.formProduto.get('senha')?.updateValueAndValidity();
     }
   }
 
-  private carregarUsuarioParaEdicao(): void {
-    this.service.loading.set(true);
+  private carregarProdutoParaEdicao(): void {
+    this.service.loading.set(true);/*
     this.service.buscarPorId(this.id!).subscribe({
-      next: (usuario) => {
-        this.formUsuario.patchValue({
-          nome: usuario.nome,
-          email: usuario.email,
-          perfil: usuario.perfil,
-          senha: usuario.senha, 
-        });
-        this.service.loading.set(false);
+      next: (Produto) => {
+        this.formProduto.patchValue({
+          nome: Produto.nome,
+          email: Produto.email,
+          perfil: Produto.perfil,
+          senha: Produto.senha, 
+        });*/
+        this.service.loading.set(false);/*
       },
       error: () => {
         this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar dados para edição' });
         this.service.loading.set(false);
         this.cancelar();
       }
-    });
+    });*/
   }
   
   salvar(): void{
-    if (this.formUsuario.valid) {
-      const raw = this.formUsuario.getRawValue();
-      const usuario: UsuarioRequest = {
+    /*
+    if (this.formProduto.valid) {
+      const raw = this.formProduto.getRawValue();
+      const Produto: ProdutoRequest = {
         ...raw,
         perfil: raw.perfil as Perfils 
       };
 
       if (this.isEdicao && !raw.senha) {
-        delete (usuario as any).senha; 
+        delete (Produto as any).senha; 
       }
       const acao = this.isEdicao && this.id 
-        ? this.service.atualizar(this.id!, usuario) 
-        : this.service.criar(usuario);
+        ? this.service.atualizar(this.id!, Produto) 
+        : this.service.criar(Produto);
 
       this.service.loading.set(true);
 
@@ -134,7 +135,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
         },
         error: (err) => this.tratarErroHttp(err)
       });
-    }
+    }*/
   }
 
   cancelar(): void {

@@ -7,7 +7,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { UsuarioLogin } from '../modelos/DTOs/UsuarioDTOs';
-import { UsuarioService } from '../service/UsuarioService';
 import { ToastModule } from "primeng/toast";
 import { AuthService } from '../service/auth.service';
 
@@ -35,7 +34,6 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    protected service: UsuarioService,
     private authService: AuthService
   ) {
     this.formLogin = this.fb.group({

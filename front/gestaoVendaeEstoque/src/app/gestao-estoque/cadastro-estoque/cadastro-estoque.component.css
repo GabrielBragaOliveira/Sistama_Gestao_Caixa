@@ -39,7 +39,7 @@
   color: #ffffff;
 }
 
-.card {
+.card{
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -48,7 +48,7 @@
   border-top: 4px solid #2ab3a3;
 }
 
-.card h2 {
+.cardh2 {
   text-align: center;
   color: #333;
   margin-top: 0;
@@ -57,7 +57,7 @@
   font-size: 1.5rem;
 }
 
-.card form .p-fluid {
+.cardform .p-fluid {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;

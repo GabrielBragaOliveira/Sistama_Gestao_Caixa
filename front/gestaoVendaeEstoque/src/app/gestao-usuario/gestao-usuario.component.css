@@ -9,8 +9,6 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   margin-bottom: 1.5rem; 
-
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,13 +26,23 @@
 .filters span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .filters label {
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #333;
   font-size: 0.875rem;
+}
+
+:host ::ng-deep .filters .p-selectbutton .p-button {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .filters .p-inputtext {
+   padding: 0.5rem 0.75rem;
+   font-size: 0.875rem;
 }
 
 :host ::ng-deep .p-table {
@@ -69,4 +77,18 @@
   text-align: right;
   color: #777;
   font-size: 0.875rem;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .p-dialog {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+::ng-deep .p-dialog .p-dialog-header {
+  display: none !important;
 }
