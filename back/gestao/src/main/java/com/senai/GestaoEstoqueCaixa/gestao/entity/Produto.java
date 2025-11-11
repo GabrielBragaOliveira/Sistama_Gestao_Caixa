@@ -34,7 +34,7 @@ public class Produto {
     private String categoria;
 
     @Column(name = "quantidade_em_estoque", nullable = false)
-    private Integer quantidadeEstoque;
+    private Integer quantidadeEstoque = 0;
 
     @Column(name = "preço_unítario", nullable = false)
     private BigDecimal preco;

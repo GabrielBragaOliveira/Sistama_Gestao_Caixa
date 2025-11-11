@@ -42,16 +42,39 @@ public class MovimentacaoEstoqueService {
     }
 
     @Transactional
-    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto) {
+    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto, String emailUsuario) {
 
         Produto produto = produtoRepository.findById(dto.produtoId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado."));
 
-        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
+        if (produto.getQuantidadeEstoque() == null) {
+            produto.setQuantidadeEstoque(0);
+        }
+
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
-        MovimentacaoEstoque movimentacao = MovimentoMapper.toEntity(dto, produto, usuario);
+        MovimentoEnum tipo = MovimentoEnum.valueOf(dto.tipo().trim().toUpperCase());
+        Integer quantidade = dto.quantidade();
 
+        switch (tipo) {
+            case ENTRADA:
+                produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + quantidade);
+                break;
+            case SAIDA:
+                if (produto.getQuantidadeEstoque() < quantidade) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estoque insuficiente para saída.");
+                }
+                produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
+                break;
+            case AJUSTE:
+                produto.setQuantidadeEstoque(quantidade);
+                break;
+        }
+
+        produtoRepository.save(produto);
+
+        MovimentacaoEstoque movimentacao = MovimentoMapper.toEntity(dto, produto, usuario);
         repository.save(movimentacao);
 
         return MovimentoMapper.toResponseDTO(movimentacao);

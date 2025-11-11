@@ -56,14 +56,15 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(@Valid
             @PathVariable Long id,
-            @RequestBody UsuarioRequestDTO dto) {
-        UsuarioResponseDTO atualizado = usuarioService.atualizar(id, dto);
+            @RequestBody UsuarioRequestDTO dto,
+            @RequestBody String emailUsuarioLogado) {
+        UsuarioResponseDTO atualizado = usuarioService.atualizar(id, dto, emailUsuarioLogado);
         return ResponseEntity.ok(atualizado);
     }
 
     @PatchMapping("/{id}/inativar")
-    public ResponseEntity<Void> inativar(@PathVariable @Valid Long id) {
-        usuarioService.inativar(id);
+    public ResponseEntity<Void> inativar(@PathVariable @Valid Long id, String emailUsuarioLogado) {
+        usuarioService.inativar(id, emailUsuarioLogado);
         return ResponseEntity.noContent().build();
     }
 
