@@ -4,11 +4,20 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { Perfils } from '../../enum/Perfil';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { FormsModule } from '@angular/forms'; 
+import { ThemeService } from '../../service/theme.service';
 
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [CommonModule, PanelMenuModule, ButtonModule],
+  imports: [
+    CommonModule, 
+    PanelMenuModule, 
+    ButtonModule,
+    InputSwitchModule, 
+    FormsModule
+  ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.css'
 })
@@ -17,46 +26,50 @@ export class SideBarComponent implements OnInit {
   @Input() username: string = 'Usuário';
   @Output() logout = new EventEmitter<void>();
 
-  sidebarAberta = true;
+  sidebarAberta = false;
   items: MenuItem[] = [];
+
+  constructor(protected themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.montarMenu();
   }
 
   private montarMenu(): void {
-  switch (this.role) {
-    case 'ADMIN':
-      this.items = [
-        {
-          label: 'Administrador',
-          icon: 'pi pi-shield',
-          items: [
-            { label: 'Gestão de Usuários', icon: 'pi pi-users', routerLink: ['/usuario'] },
-            { label: 'Gestão de Estoque', icon: 'pi pi-box', routerLink: ['/estoque'] },
-            { label: 'Relatórios', icon: 'pi pi-chart-line', routerLink: ['/relatorio'] }
-          ]
-        }
-      ];
-      break;
+    switch (this.role) {
+      case 'ADMIN':
+        this.items = [
+          {
+            label: 'Administrador',
+            icon: 'pi pi-shield',
+            items: [
+              { label: 'Gestão de Usuários', icon: 'pi pi-users', routerLink: ['/usuario'] },
+              { label: 'Gestão de Estoque', icon: 'pi pi-box', routerLink: ['/estoque'] },
+              { label: 'Relatórios', icon: 'pi pi-chart-line', routerLink: ['/relatorio'] }
+            ]
+          }
+        ];
+        this.toggleSidebar();
+        break;
 
-    case 'OPERADOR':
-      this.items = [
-        {
-          label: 'Operador',
-          icon: 'pi pi-briefcase',
-          items: [
-            { label: 'Vendas', icon: 'pi pi-shopping-cart', routerLink: ['/venda'] },
-            { label: 'Relatórios', icon: 'pi pi-chart-line', routerLink: ['/relatorio'] }
-          ]
-        }
-      ];
-      break;
+      case 'OPERADOR':
+        this.items = [
+          {
+            label: 'Operador',
+            icon: 'pi pi-briefcase',
+            items: [
+              { label: 'Vendas', icon: 'pi pi-shopping-cart', routerLink: ['/venda'] },
+              { label: 'Relatórios', icon: 'pi pi-chart-line', routerLink: ['/relatorio'] }
+            ]
+          }
+        ];
+        this.toggleSidebar();
+        break;
 
-    default:
-      this.items = [];
+      default:
+        this.items = [];
+    }
   }
-}
 
 
   onLogout(): void {
@@ -69,6 +82,10 @@ export class SideBarComponent implements OnInit {
 
   sair(): void {
     this.logout.emit();
+  }
+
+  onThemeToggle() {
+    this.themeService.toggleTheme();
   }
 }
 

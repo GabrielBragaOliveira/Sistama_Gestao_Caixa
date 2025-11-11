@@ -10,7 +10,7 @@
   flex-direction: column;
   border-radius: 0 10px 10px 0;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-  transition: width 0.3s ease, background-color 0.3s ease;
+  transition: width 0.3s ease, background-color 0.3s ease, padding 0.3s ease;
   display: flex;
   flex-direction: column;
   z-index: 1000;
@@ -19,7 +19,7 @@
 .toggle-btn {
   position: absolute;
   top: 1rem;
-  right: -15px;
+  left: 235px;
   background: rgba(42, 179, 163, 0.4); /* mesma cor, mas 70% opaca */
   color: white;
   border-radius: 50%;
@@ -30,7 +30,7 @@
   align-items: center;
   box-shadow: 0 0 5px rgba(0,0,0,0.3);
   cursor: pointer;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, left 0.3s ease;
 }
 
 .toggle-btn:hover {
@@ -93,9 +93,30 @@
 
 .sidebar.fechada {
   width: 0px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar.fechada .toggle-btn {
+  left: 0px;
 }
 
 .sidebar.fechada .sidebar-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: var(--text-color-secondary);
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.fechada .theme-switch {
   opacity: 0;
   pointer-events: none;
 }

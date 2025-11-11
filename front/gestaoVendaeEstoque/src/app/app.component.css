@@ -1,4 +1,26 @@
 .app-content {
-  margin-left: 30px;
   background: linear-gradient(135deg, #eaf6f6, #cce3dc);
+  min-height: 100vh;
+  padding-left: 30px;
+}
+
+.top-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #2ab3a3, #4be0ce, #2ab3a3);
+  background-size: 200% 100%;
+  animation: loadingAnimation 1.5s linear infinite;
+  z-index: 9999;
+}
+
+@keyframes loadingAnimation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

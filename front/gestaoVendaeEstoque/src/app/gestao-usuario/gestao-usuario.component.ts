@@ -10,11 +10,11 @@ import { TableModule } from 'primeng/table';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { Perfils } from '../enum/Perfil';
 import { UsuarioService } from '../service/UsuarioService';
-import { Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { UsuarioResponse } from '../modelos/DTOs/UsuarioDTOs';
 import { CadastroUsuarioComponent } from "./cadastro-usuario/cadastro-usuario.component";
 import { finalize } from 'rxjs';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-gestao-usuario',
@@ -29,7 +29,8 @@ import { finalize } from 'rxjs';
     InputTextModule,
     SelectButtonModule,
     ButtonModule,
-    CadastroUsuarioComponent
+    CadastroUsuarioComponent,
+    DialogModule
 ],
   templateUrl: './gestao-usuario.component.html',
   styleUrl: './gestao-usuario.component.css'
@@ -39,13 +40,11 @@ export class GestaoUsuarioComponent implements OnInit{
   filtroString: string = '';
   filtroAtivo: boolean | null = null;
   filtroPerfil: Perfils | null = null;
-  novoUsuarioaberto = false;
   usuarios: UsuarioResponse[] = [];
   abrirCadastro = false;
   idEditando: number | null = null;
   isEdicao: boolean = false;
   private filtroTimeout: any;
-
 
   statusOptionsAtivo = [
     { label: 'Todos', value: null },
@@ -63,7 +62,6 @@ export class GestaoUsuarioComponent implements OnInit{
     protected service: UsuarioService,
     private msg: MessageService,
     private confirm: ConfirmationService,
-    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +69,7 @@ export class GestaoUsuarioComponent implements OnInit{
   }
 
   carregar(): void{
-   this.service.loading.set(true);
+    this.service.loading.set(true);
 
     const params : any = {};
     
@@ -84,7 +82,7 @@ export class GestaoUsuarioComponent implements OnInit{
         this.usuarios = lista;
       },
       error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar funcionários' });
+        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os Usuarios' });
       }
     })
   }
@@ -110,7 +108,7 @@ export class GestaoUsuarioComponent implements OnInit{
     this.service.loading.set(true);
     this.service.inativar(id).pipe(finalize(() => this.service.loading.set(false))).subscribe({
       next: () => {
-        this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Funcionário inativado' });
+        this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Usuario inativado' });
         this.carregar();
       },
       error: () => {

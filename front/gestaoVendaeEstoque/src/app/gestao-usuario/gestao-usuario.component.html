@@ -1,18 +1,11 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
-<app-cadastro-usuario
-  *ngIf="abrirCadastro"
-  [id]="idEditando"
-  [isEdicao]="isEdicao"
-  (fechar)="onFormularioFechado($event)"
-></app-cadastro-usuario >
-
 <div class="pesquisaBar">
   <div class="filters">
     <span>
-      <label>nome:</label>
-      <input pInputText type="text" [(ngModel)]="filtroString" placeholder="Ex.: Analista" (input)="onFiltroStringChange()" />
+      <label>Pesquisa:</label>
+      <input pInputText type="text" [(ngModel)]="filtroString" placeholder="Nome ou E-mail" (input)="onFiltroStringChange()" />
     </span>
 
     <span>
@@ -43,7 +36,7 @@
   <button pButton label="Novo Usuario" class="p-button-success" (click)="novo()"></button>
 </div>
 
-<p-table [value]="usuarios" [paginator]="true" [rows]="10" >
+<p-table [value]="usuarios" [paginator]="true" [rows]="10" [loading]="service.loading()" [tableStyle]="{'table-layout': 'fixed', 'width': '100%'}" >  
   <ng-template pTemplate="header">
     <tr>
       <th>Nome</th>
@@ -62,8 +55,8 @@
         <p-tag [severity]="users.ativo ? 'success' : 'danger'" [value]="users.ativo ? 'Ativo' : 'Inativo'"></p-tag>
       </td>
       <td>
-        <button pButton label="Editar" (click)="editar(users.id)"[disabled]="!users.ativo"></button>
-        <button pButton label="Inativar" class="p-button-danger" (click)="confirmarInativacao(users)" [disabled]="!users.ativo"></button>
+        <button pButton label="Editar" icon="pi pi-pencil" (click)="editar(users.id)"[disabled]="!users.ativo"class="p-button-text p-button-info" ></button>
+        <button pButton label="Inativar" icon="pi pi-ban" class="p-button-danger p-button-text" (click)="confirmarInativacao(users)" [disabled]="!users.ativo"></button>
       </td>
     </tr>
   </ng-template>
@@ -72,3 +65,17 @@
 <div class="summary">
   Total: {{ usuarios.length }}
 </div>
+
+<p-dialog 
+  [(visible)]="abrirCadastro" 
+  [modal]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  [closable]="false"
+  (onHide)="onFormularioFechado(false)"> 
+    <app-cadastro-usuario
+      [id]="idEditando"
+      [isEdicao]="isEdicao"
+      (fechar)="onFormularioFechado($event)"
+    ></app-cadastro-usuario>
+</p-dialog>

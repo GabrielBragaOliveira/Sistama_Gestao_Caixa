@@ -5,7 +5,8 @@ import { AuthService } from './service/auth.service';
 import { Perfils } from './enum/Perfil';
 import { CommonModule } from '@angular/common';
 import { UsuarioResponse } from './modelos/DTOs/UsuarioDTOs';
-import { Nullable } from 'primeng/ts-helpers';
+import { UsuarioService } from './service/UsuarioService';
+import { ThemeService } from './service/theme.service';
 
 
 @Component({
@@ -25,7 +26,9 @@ export class AppComponent{
 
   constructor(
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    protected service: UsuarioService,
+    private themeService: ThemeService
   ) {}
 
   private atualizarUsuario(): void {
