@@ -16,5 +16,6 @@ public record ProdutoResponseDTO(
     String codigo,
     String categoria,
     Integer quantidadeEstoque,
-    BigDecimal preco
+    BigDecimal preco,
+    Boolean ativo
 ) {}

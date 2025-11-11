@@ -28,12 +28,13 @@ public class ProdutoMapper {
 
     public static ProdutoResponseDTO toResponseDTO(Produto produto) {
         return new ProdutoResponseDTO(
-            produto.getId(),
-            produto.getNome(),
-            produto.getCodigo(),
-            produto.getCategoria(),
-            produto.getQuantidadeEstoque(),
-            produto.getPreco()
+                produto.getId(),
+                produto.getNome(),
+                produto.getCodigo(),
+                produto.getCategoria(),
+                produto.getQuantidadeEstoque(),
+                produto.getPreco(),
+                produto.getAtivo()
         );
     }
 }

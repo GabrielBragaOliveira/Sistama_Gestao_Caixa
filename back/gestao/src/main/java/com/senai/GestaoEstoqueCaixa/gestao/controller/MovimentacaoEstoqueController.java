@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,17 +32,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class MovimentacaoEstoqueController {
 
     @Autowired
-    private  MovimentacaoEstoqueService service;
+    private MovimentacaoEstoqueService service;
 
-     public MovimentacaoEstoqueController(MovimentacaoEstoqueService service) {
+    public MovimentacaoEstoqueController(MovimentacaoEstoqueService service) {
         this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<MovimentoEstoqueResponseDTO> criarMovimentacao(
-            @Valid @RequestBody MovimentoEstoqueRequestDTO dto) {
+            @Valid @RequestBody MovimentoEstoqueRequestDTO dto,
+            @RequestHeader String emailUsuario) {
 
-        MovimentoEstoqueResponseDTO responseDTO = service.criarMovimentacao(dto);
+        MovimentoEstoqueResponseDTO responseDTO = service.criarMovimentacao(dto, emailUsuario);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 

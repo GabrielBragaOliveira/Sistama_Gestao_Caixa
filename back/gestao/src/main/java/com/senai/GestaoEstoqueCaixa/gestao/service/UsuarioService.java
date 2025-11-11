@@ -69,7 +69,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
-        
+
         if (dto.nome() == null && dto.nome().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome do usuário é obrigatório.");
         }
@@ -104,10 +104,15 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto, String emailUsuarioLogado) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Usuário não encontrado com email: " + id));
+
+        if (usuarioExistente.getEmail().equalsIgnoreCase(emailUsuarioLogado)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Você não pode editar seu próprio usuário.");
+        }
 
         if (!usuarioExistente.isAtivo()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente usuários ativos podem ser editados.");
@@ -139,10 +144,15 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void inativar(Long id) {
+    public void inativar(Long id, String emailUsuarioLogado) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Usuário não encontrado: "));
+
+        if (usuarioExistente.getEmail().equalsIgnoreCase(emailUsuarioLogado)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Você não pode inativar o seu próprio usuário.");
+        }
 
         usuarioExistente.setAtivo(false);
         usuarioRepository.save(usuarioExistente);
