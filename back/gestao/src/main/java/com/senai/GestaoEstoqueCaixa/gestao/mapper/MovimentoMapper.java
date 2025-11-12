@@ -26,8 +26,7 @@ public class MovimentoMapper {
                 movimentacao.getQuantidade(),
                 movimentacao.getMotivo(),
                 movimentacao.getData(),
-                movimentacao.getUsuarioResponsavel() != null ? movimentacao.getUsuarioResponsavel().getId() : null,
-                movimentacao.getUsuarioResponsavel() != null ? movimentacao.getUsuarioResponsavel().getNome() : null
+                movimentacao.getUsuarioResponsavel() != null ? movimentacao.getUsuarioResponsavel().getId() : null
         );
     }
 

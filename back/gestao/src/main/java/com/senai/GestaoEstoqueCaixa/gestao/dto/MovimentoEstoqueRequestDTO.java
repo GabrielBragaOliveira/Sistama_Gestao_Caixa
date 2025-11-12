@@ -23,8 +23,6 @@ public record MovimentoEstoqueRequestDTO(
         @Min(value = 1, message = "A quantidade deve ser no mínimo 1.")
         Integer quantidade,
 
-        String motivo,
+        String motivo
 
-        @NotNull(message = "O ID do usuário é obrigatório.")
-        Long usuarioId
 ) {}
