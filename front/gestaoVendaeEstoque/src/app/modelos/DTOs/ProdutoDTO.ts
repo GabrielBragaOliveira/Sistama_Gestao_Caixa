@@ -1,5 +1,5 @@
 export interface ProdutoRequest{
-  codigo: string;
+  codigo: number;
   nome: string;
   categoria: string;
   quantidadeEstoque: number;
@@ -8,11 +8,10 @@ export interface ProdutoRequest{
 
 export interface ProdutoResponse{
   id: number;
-  codigo: string;
+  codigo: number;
   nome: string;
   categoria: string;
   quantidadeEstoque: number;
   preco: number;
   ativo: boolean;
 }
-

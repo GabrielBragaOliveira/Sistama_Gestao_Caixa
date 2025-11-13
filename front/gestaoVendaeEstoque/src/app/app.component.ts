@@ -6,7 +6,6 @@ import { Perfils } from './enum/Perfil';
 import { CommonModule } from '@angular/common';
 import { UsuarioResponse } from './modelos/DTOs/UsuarioDTOs';
 import { UsuarioService } from './service/UsuarioService';
-import { ThemeService } from './service/theme.service';
 
 
 @Component({
@@ -28,7 +27,6 @@ export class AppComponent{
     private auth: AuthService,
     private router: Router,
     protected service: UsuarioService,
-    private themeService: ThemeService
   ) {}
 
   private atualizarUsuario(): void {

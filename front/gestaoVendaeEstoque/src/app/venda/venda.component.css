@@ -1,0 +1,174 @@
+:host {
+  display: block;
+}
+
+
+.venda-container {
+  display: grid;
+  grid-template-columns: 70fr 30fr; 
+  gap: 1.5rem;
+  padding: 1.5rem;
+  height: calc(100vh - 100px); 
+}
+
+
+.col-esquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%; 
+}
+
+.col-direita {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.painel-busca-container {
+  display: flex; 
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--surface-card);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.busca-inputs {
+  display: grid;
+  grid-template-columns: 1fr auto auto; 
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.campo-busca {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%; 
+}
+:host ::ng-deep .campo-busca .p-autocomplete {
+  width: 100%;
+}
+
+.campo-qtd {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.campo-botao {
+  padding-bottom: 1px;
+}
+
+.campo-busca label,
+.campo-qtd label {
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.display-produto, .display-produto-vazio {
+  background: var(--surface-ground);
+  border-radius: 6px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 0.25rem 1rem;
+  align-items: center;
+}
+.display-produto-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-color-secondary);
+}
+.display-nome {
+  grid-column: 1 / 2;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+.display-categoria {
+  grid-column: 1 / 2;
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+}
+.display-codigo {
+  grid-column: 1 / 2;
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+}
+.display-preco {
+  grid-column: 2 / 3;
+  grid-row: 1 / 4;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-align: right;
+  align-self: center; 
+}
+
+.painel-itens {
+  flex: 1; 
+  overflow: hidden; 
+  background: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+}
+
+.item-nome {
+  display: block;
+  font-weight: 600;
+}
+.item-codigo {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+}
+
+.card-pagamento {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+}
+:host ::ng-deep .card-pagamento .p-card-content {
+  flex: 1; 
+}
+:host ::ng-deep .card-pagamento .p-card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.resumo-total, .resumo-troco {
+  margin-bottom: 2rem;
+}
+.total-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  margin: 0 0 0.25rem 0;
+}
+.total-valor {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  display: block;
+}
+.total-valor.troco {
+  color: var(--green-500);
+}
+.total-valor.troco-negativo {
+  color: var(--text-color-secondary) !important;
+}
+
+.botoes-pagamento {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

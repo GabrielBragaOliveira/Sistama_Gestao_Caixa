@@ -6,7 +6,6 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { Perfils } from '../../enum/Perfil';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormsModule } from '@angular/forms'; 
-import { ThemeService } from '../../service/theme.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -28,8 +27,6 @@ export class SideBarComponent implements OnInit {
 
   sidebarAberta = false;
   items: MenuItem[] = [];
-
-  constructor(protected themeService: ThemeService) {}
 
   ngOnInit(): void {
     this.montarMenu();
@@ -83,9 +80,6 @@ export class SideBarComponent implements OnInit {
   sair(): void {
     this.logout.emit();
   }
-
-  onThemeToggle() {
-    this.themeService.toggleTheme();
-  }
+  
 }
 

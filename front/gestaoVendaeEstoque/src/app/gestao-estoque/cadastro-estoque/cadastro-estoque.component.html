@@ -7,6 +7,16 @@
 
           <div class="p-field">
             <span class="p-input-icon-left">
+              <i class="pi pi-cod"></i> <input pInputNumber formControlName="codigo" placeholder="Codigo" />
+            </span>
+
+            <div *ngIf="formProduto.get('codigo')?.invalid && (formProduto.get('codigo')?.dirty || formProduto.get('codigo')?.touched)" class="error-message">
+              <small *ngIf="formProduto.get('codigo')?.errors?.['required']"> Codigo é obrigatório. </small>
+            </div>
+          </div>
+
+          <div class="p-field">
+            <span class="p-input-icon-left">
               <i class="pi pi-user"></i> <input pInputText formControlName="nome" placeholder="Nome" />
             </span>
 
@@ -17,39 +27,24 @@
 
           <div class="p-field">
             <span class="p-input-icon-left">
-              <i class="pi pi-envelope"></i> <input pInputText formControlName="email" placeholder="E-mail" type="email" />
+              <i class="pi pi-categoria"></i> <input pInputText formControlName="categoria" placeholder="categoria" />
             </span>
 
-            <div *ngIf="formProduto.get('email')?.invalid && (formProduto.get('email')?.dirty || formProduto.get('email')?.touched)"class="error-message">
-              <small *ngIf="formProduto.get('email')?.errors?.['required']"> E-mail é obrigatório. </small>
-              <small *ngIf="formProduto.get('email')?.errors?.['email']"> E-mail inválido. </small> 
-            </div>
-          </div>
-
-          <div class="p-field">
-            <label for="perfil">Perfil</label>
-            <p-selectButton formControlName="perfil" [options]="perfis" optionLabel="label" optionValue="value" class="perfil-select"></p-selectButton>
-          
-            <div *ngIf="formProduto.get('perfil')?.invalid && (formProduto.get('perfil')?.dirty || formProduto.get('perfil')?.touched)" class="error-message" >
-              <small *ngIf="formProduto.get('perfil')?.errors?.['required']"> Perfil é obrigatório. </small>
+            <div *ngIf="formProduto.get('categoria')?.invalid && (formProduto.get('categoria')?.dirty || formProduto.get('categoria')?.touched)" class="error-message">
+              <small *ngIf="formProduto.get('categoria')?.errors?.['required']"> Categoria é obrigatório. </small>
             </div>
           </div>
 
           <div class="p-field">
             <span class="p-input-icon-left">
-              <i class="pi pi-lock"></i>
-              <input
-                pInputText
-                formControlName="senha"
-                placeholder="Senha"
-                type="password"
-              />
+              <i class="pi pi-categoria"></i> <input pInputText formControlName="categoria" placeholder="categoria" />
             </span>
-          
-            <div *ngIf="formProduto.get('senha')?.invalid && (formProduto.get('senha')?.dirty || formProduto.get('senha')?.touched)"class="error-message">
-              <small *ngIf="formProduto.get('senha')?.errors?.['required']"> Senha é obrigatório. </small>
+
+            <div *ngIf="formProduto.get('categoria')?.invalid && (formProduto.get('categoria')?.dirty || formProduto.get('categoria')?.touched)" class="error-message">
+              <small *ngIf="formProduto.get('categoria')?.errors?.['required']"> Categoria é obrigatório. </small>
             </div>
           </div>
+          
 
           <div class="botoes-acao">
             <button
