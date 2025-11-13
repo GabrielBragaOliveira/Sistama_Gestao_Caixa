@@ -38,13 +38,13 @@ public class VendaService {
     private VendaRepository vendaRepository;
     @Autowired
     private ItemVendaRepository itemVendaRepository;
-    
+
     @Autowired
     private ProdutoRepository produtoRepository;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
@@ -69,8 +69,14 @@ public class VendaService {
         List<ItemVenda> itens = new ArrayList<>();
 
         for (ItemVendaRequestDTO itemDTO : dto.itens()) {
-            Produto produto = produtoRepository.findById(itemDTO.produtoId())
+            Produto produto = produtoRepository.findByIdForUpdate(itemDTO.produtoId())
                     .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado: ID " + itemDTO.produtoId()));
+
+            if (itemDTO.precoUnitario() == null
+                    || produto.getPreco() == null
+                    || itemDTO.precoUnitario().compareTo(produto.getPreco()) != 0) {
+                throw new IllegalArgumentException("Preço unitário inválido para o produto: " + produto.getNome());
+            }
 
             if (itemDTO.quantidade() > produto.getQuantidadeEstoque()) {
                 throw new IllegalArgumentException("Estoque insuficiente para o produto: " + produto.getNome());
@@ -81,23 +87,30 @@ public class VendaService {
 
             produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - item.getQuantidade());
             produtoRepository.save(produto);
-
-            MovimentacaoEstoque mov = new MovimentacaoEstoque();
-            mov.setProduto(produto);
-            mov.setTipo(MovimentoEnum.SAIDA);
-            mov.setQuantidade(item.getQuantidade());
-            mov.setMotivo("Venda ID (gerado posteriormente)");
-            mov.setData(LocalDateTime.now());
-            movimentacaoEstoqueService.registrarMovimentacao(mov);
         }
 
         Venda venda = VendaMapper.toEntity(dto, usuario, itens);
         venda.setDataVenda(LocalDateTime.now());
+        venda.getItens().forEach(item -> item.setVenda(venda));
+
+        if (venda.getValorRecebido() == null
+                || venda.getValorRecebido().compareTo(venda.getValorTotal()) < 0) {
+            throw new IllegalArgumentException(
+                    "Valor recebido R$" + venda.getValorRecebido()
+                    + " é menor que o valor total da venda R$" + venda.getValorTotal() 
+            );
+        }
 
         Venda vendaSalva = vendaRepository.save(venda);
-        for (ItemVenda item : itens) {
-            item.setVenda(vendaSalva);
-            itemVendaRepository.save(item);
+
+        for (ItemVenda item : vendaSalva.getItens()) {
+            MovimentacaoEstoque mov = new MovimentacaoEstoque();
+            mov.setProduto(item.getProduto());
+            mov.setTipo(MovimentoEnum.SAIDA);
+            mov.setQuantidade(item.getQuantidade());
+            mov.setMotivo("Venda ID " + vendaSalva.getId());
+            mov.setData(LocalDateTime.now());
+            movimentacaoEstoqueService.registrarMovimentacao(mov);
         }
 
         return VendaMapper.toResponseDTO(vendaSalva);

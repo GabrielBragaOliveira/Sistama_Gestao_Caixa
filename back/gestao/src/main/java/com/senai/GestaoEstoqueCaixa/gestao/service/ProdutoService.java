@@ -52,7 +52,7 @@ public class ProdutoService {
         return produtoMapper.toResponseDTO(produto);
     }
 
-    public ProdutoResponseDTO buscarPorCodigo(String codigo) {
+    public ProdutoResponseDTO buscarPorCodigo(Integer codigo) {
         Produto produto = produtoRepository.findByCodigo(codigo)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Produto não encontrado com ID: " + codigo));
@@ -105,8 +105,8 @@ public class ProdutoService {
         if (dto.quantidadeEstoque() < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade em estoque não pode ser negativa.");
         }
-        
-        if (!produtoExistente.getCodigo().equalsIgnoreCase(dto.codigo()) && produtoRepository.existsByCodigo(dto.codigo())) {
+
+        if (!produtoExistente.getCodigo().equals(dto.codigo()) && produtoRepository.existsByCodigo(dto.codigo())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "O código informado já está cadastrado para outro produto.");
         }
 

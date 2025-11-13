@@ -4,6 +4,7 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +20,10 @@ public record ProdutoRequestDTO(
     @NotBlank(message = "O nome é obrigatório.")
     String nome,
         
-    @NotBlank(message = "O codigo é obrigatório.")
-    String codigo,
+    @NotNull(message = "O código é obrigatório.")
+    @Min(value = 1000000, message = "O código deve conter exatamente 7 dígitos.")
+    @Max(value = 9999999, message = "O código deve conter exatamente 7 dígitos.")
+    Integer codigo,
 
     @NotBlank(message = "A categoria é obrigatória.")
     String categoria,

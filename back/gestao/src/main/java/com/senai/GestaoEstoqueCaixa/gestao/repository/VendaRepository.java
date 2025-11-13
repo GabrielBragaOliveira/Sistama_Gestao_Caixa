@@ -4,11 +4,15 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.repository;
 
+import com.senai.GestaoEstoqueCaixa.gestao.entity.Produto;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
+import jakarta.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
