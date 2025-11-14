@@ -1,1 +1,1 @@
-export interface MovimentacaoEstoque{}
+export interface MovimentacaoEstoque { }

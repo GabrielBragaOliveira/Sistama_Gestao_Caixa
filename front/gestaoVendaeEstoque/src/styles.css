@@ -1,10 +1,35 @@
-@import "primeng/resources/themes/saga-blue/theme.css";
+@import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.min.css";
 @import "primeicons/primeicons.css";
 
-body, html {
+:root,
+.theme-light {
+  --primary-color: #2ab3a3;
+  --primary-color-text: #ffffff;
+  --surface-ground: linear-gradient(135deg, #eaf6f6, #cce3dc);
+  --surface-card: #ffffff;
+  --text-color: #333333;
+  --text-color-secondary: #555555;
+  --loading-bar-gradient: linear-gradient(90deg, #2ab3a3, #4be0ce, #2ab3a3);
+  --surface-border: #e0e0e0;
+}
+
+.theme-dark {
+  --primary-color: #4be0ce;
+  --primary-color-text: #121212;
+  --surface-ground: #121212;
+  --surface-card: #1e1e1e;
+  --text-color: #f0f0f0;
+  --text-color-secondary: #c0c0c0;
+  --loading-bar-gradient: linear-gradient(90deg, #4be0ce, #79f7e8, #4be0ce);
+  --surface-border: #333333;
+}
+
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
-  box-sizing: border-box; 
+  box-sizing: border-box;
+  background: var(--surface-ground);
 }

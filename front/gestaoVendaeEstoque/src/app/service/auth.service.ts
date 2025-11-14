@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 import { UsuarioService } from './UsuarioService';
 import { MessageService } from 'primeng/api';
 import { UsuarioLogin, UsuarioResponse } from '../modelos/DTOs/UsuarioDTOs';
@@ -34,11 +34,11 @@ export class AuthService {
     const usuario = localStorage.getItem(this.USER_KEY);
     return usuario ? JSON.parse(usuario) : null;
   }
-  
+
   getIsAuthenticated(): boolean {
     return !!localStorage.getItem(this.USER_KEY);
   }
-  
+
   sair(): void {
     localStorage.removeItem(this.USER_KEY);
     this.router.navigate(['/login']);

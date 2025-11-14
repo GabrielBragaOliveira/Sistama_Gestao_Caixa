@@ -22,19 +22,19 @@ import { finalize } from 'rxjs';
     InputTextModule,
     ButtonModule,
     ToastModule,
-    ],
+  ],
   templateUrl: './cadastro-usuario.component.html',
   styleUrl: './cadastro-usuario.component.css'
 })
 export class CadastroUsuarioComponent implements OnInit, OnChanges {
   @Input() id: number | null = null;
   @Input() isEdicao: boolean = false;
-  @Output() fechar = new EventEmitter<boolean>();
+  @Output() fechar = new EventEmitter();
 
   formUsuario: FormGroup<{
-    nome: FormControl<string>; 
+    nome: FormControl<string>;
     email: FormControl<string>;
-    perfil: FormControl<Perfils|''>;
+    perfil: FormControl<Perfils | ''>;
     senha: FormControl<string>;
   }>;
 
@@ -79,7 +79,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
 
     if (this.isEdicao && this.id) {
       this.carregarUsuarioParaEdicao();
-      
+
       this.formUsuario.get('senha')?.clearValidators();
       this.formUsuario.get('senha')?.updateValueAndValidity();
     }
@@ -93,7 +93,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
           nome: usuario.nome,
           email: usuario.email,
           perfil: usuario.perfil,
-          senha: usuario.senha, 
+          senha: usuario.senha,
         });
         this.service.loading.set(false);
       },
@@ -104,20 +104,20 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
       }
     });
   }
-  
-  salvar(): void{
+
+  salvar(): void {
     if (this.formUsuario.valid) {
       const raw = this.formUsuario.getRawValue();
       const usuario: UsuarioRequest = {
         ...raw,
-        perfil: raw.perfil as Perfils 
+        perfil: raw.perfil as Perfils
       };
 
       if (this.isEdicao && !raw.senha) {
-        delete (usuario as any).senha; 
+        delete (usuario as any).senha;
       }
-      const acao = this.isEdicao && this.id 
-        ? this.service.atualizar(this.id!, usuario) 
+      const acao = this.isEdicao && this.id
+        ? this.service.atualizar(this.id!, usuario)
         : this.service.criar(usuario);
 
       this.service.loading.set(true);
@@ -127,9 +127,9 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
         next: () => {
           this.msg.add({ severity: 'success', summary: 'Sucesso', detail: msgSucesso });
           if (this.isEdicao) {
-            this.fechar.emit(true); 
+            this.fechar.emit(true);
           } else {
-            this.cancelar(); 
+            this.cancelar();
           }
         },
         error: (err) => this.tratarErroHttp(err)

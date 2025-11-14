@@ -1,5 +1,4 @@
-
-<div class="sidebar"[class.fechada]="!sidebarAberta">
+<div class="sidebar" [class.fechada]="!sidebarAberta">
   <div class="toggle-btn" (click)="toggleSidebar()">
     <i class="pi" [ngClass]="sidebarAberta ? 'pi-angle-left' : 'pi-angle-right'"></i>
   </div>
@@ -12,17 +11,19 @@
   </div>
 
   <div class="sidebar-footer">
+
+    <div class="theme-switch">
+      <i class="pi pi-sun"></i>
+      <p-inputSwitch [ngModel]="temaService.theme() === 'dark'" (onChange)="onThemeToggle()" />
+      <i class="pi pi-moon"></i>
+    </div>
+
     <div class="user-info">
       <i class="pi pi-user"></i>
       <span>{{ username }}</span>
     </div>
-    <button
-      pButton
-      type="button"
-      icon="pi pi-sign-out"
-      label="Sair"
-      class="p-button-danger p-button-sm"
-      (click)="onLogout()">
-    </button>
+
+    <button pButton type="button" icon="pi pi-sign-out" label="Sair" class="p-button-danger p-button-sm"
+      (click)="onLogout()"></button>
   </div>
 </div>

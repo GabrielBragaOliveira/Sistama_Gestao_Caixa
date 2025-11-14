@@ -5,16 +5,17 @@ import { ButtonModule } from 'primeng/button';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { Perfils } from '../../enum/Perfil';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { TemaService } from '../../service/temaService';
 
 @Component({
   selector: 'app-side-bar',
   standalone: true,
   imports: [
-    CommonModule, 
-    PanelMenuModule, 
+    CommonModule,
+    PanelMenuModule,
     ButtonModule,
-    InputSwitchModule, 
+    InputSwitchModule,
     FormsModule
   ],
   templateUrl: './side-bar.component.html',
@@ -24,12 +25,16 @@ export class SideBarComponent implements OnInit {
   @Input() role: Perfils | '' = '';
   @Input() username: string = 'Usuário';
   @Output() logout = new EventEmitter<void>();
+  @Output() stateChanged = new EventEmitter<boolean>();
 
   sidebarAberta = false;
   items: MenuItem[] = [];
 
+  constructor(public temaService: TemaService) { }
+
   ngOnInit(): void {
     this.montarMenu();
+    this.stateChanged.emit(this.sidebarAberta);
   }
 
   private montarMenu(): void {
@@ -68,18 +73,21 @@ export class SideBarComponent implements OnInit {
     }
   }
 
-
   onLogout(): void {
     this.logout.emit();
   }
 
   toggleSidebar(): void {
     this.sidebarAberta = !this.sidebarAberta;
+    this.stateChanged.emit(this.sidebarAberta);
   }
 
   sair(): void {
     this.logout.emit();
   }
-  
+
+  onThemeToggle(): void {
+    this.temaService.toggleTheme();
+  }
 }
 

@@ -1,67 +1,88 @@
-<div class="card">
+<p-toast></p-toast>
 
-      <h2>{{ isEdicao ? 'Formulario Editar Produto' : 'Formulario Novo Protudo' }}</h2>
+<div class="cardProduto">
+  <h2>Formulário Novo Produto</h2>
+  
+  <form [formGroup]="formProduto" (ngSubmit)="salvar()">
+    <div class="p-fluid">
 
-      <form [formGroup]="formProduto" (ngSubmit)="salvar()">
-        <div class="p-fluid">
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-cod"></i> <input pInputNumber formControlName="codigo" placeholder="Codigo" />
-            </span>
-
-            <div *ngIf="formProduto.get('codigo')?.invalid && (formProduto.get('codigo')?.dirty || formProduto.get('codigo')?.touched)" class="error-message">
-              <small *ngIf="formProduto.get('codigo')?.errors?.['required']"> Codigo é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-user"></i> <input pInputText formControlName="nome" placeholder="Nome" />
-            </span>
-
-            <div *ngIf="formProduto.get('nome')?.invalid && (formProduto.get('nome')?.dirty || formProduto.get('nome')?.touched)" class="error-message">
-              <small *ngIf="formProduto.get('nome')?.errors?.['required']"> Nome é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-categoria"></i> <input pInputText formControlName="categoria" placeholder="categoria" />
-            </span>
-
-            <div *ngIf="formProduto.get('categoria')?.invalid && (formProduto.get('categoria')?.dirty || formProduto.get('categoria')?.touched)" class="error-message">
-              <small *ngIf="formProduto.get('categoria')?.errors?.['required']"> Categoria é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-categoria"></i> <input pInputText formControlName="categoria" placeholder="categoria" />
-            </span>
-
-            <div *ngIf="formProduto.get('categoria')?.invalid && (formProduto.get('categoria')?.dirty || formProduto.get('categoria')?.touched)" class="error-message">
-              <small *ngIf="formProduto.get('categoria')?.errors?.['required']"> Categoria é obrigatório. </small>
-            </div>
-          </div>
-          
-
-          <div class="botoes-acao">
-            <button
-              pButton
-              type="submit"
-              label="Salvar" class="p-button-success"
-              icon="pi pi-check" [disabled]="formProduto.invalid"
-            ></button>
-
-            <button
-              pButton
-              type="button"
-              label="Cancelar"
-              class="p-button-secondary"
-              icon="pi pi-times" (click)="cancelar()"
-            ></button>
-          </div>
+      <div class="p-field">
+        <label for="codigo">Código</label>
+        <p-inputNumber 
+          inputId="codigo" 
+          formControlName="codigo" 
+          [useGrouping]="false"
+          placeholder="Ex: 101">
+        </p-inputNumber>
+        
+        <div *ngIf="formProduto.get('codigo')?.invalid && (formProduto.get('codigo')?.dirty || formProduto.get('codigo')?.touched)" class="error-message">
+          <small *ngIf="formProduto.get('codigo')?.errors?.['required']">
+            Código é obrigatório.
+          </small>
         </div>
-      </form>
+      </div>
+
+      <div class="p-field">
+        <label for="nome">Nome do Produto</label>
+        <input pInputText id="nome" formControlName="nome" placeholder="Ex: Coca-Cola Lata 350ml" />
+        
+        <div *ngIf="formProduto.get('nome')?.invalid && (formProduto.get('nome')?.dirty || formProduto.get('nome')?.touched)" class="error-message">
+          <small *ngIf="formProduto.get('nome')?.errors?.['required']">
+            Nome é obrigatório.
+          </small>
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="categoria">Categoria</label>
+        <input pInputText id="categoria" formControlName="categoria" placeholder="Ex: Bebidas" />
+        
+        <div *ngIf="formProduto.get('categoria')?.invalid && (formProduto.get('categoria')?.dirty || formProduto.get('categoria')?.touched)" class="error-message">
+          <small *ngIf="formProduto.get('categoria')?.errors?.['required']">
+            Categoria é obrigatória.
+          </small>
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="preco">Preço Unitário</label>
+        <p-inputNumber 
+          inputId="preco" 
+          formControlName="preco" 
+          mode="currency" 
+          currency="BRL" 
+          locale="pt-BR">
+        </p-inputNumber>
+        
+        <div *ngIf="formProduto.get('preco')?.invalid && (formProduto.get('preco')?.dirty || formProduto.get('preco')?.touched)" class="error-message">
+          <small *ngIf="formProduto.get('preco')?.errors?.['required']">
+            Preço é obrigatório.
+          </small>
+          <small *ngIf="formProduto.get('preco')?.errors?.['min']">
+            O preço deve ser maior que zero.
+          </small>
+        </div>
+      </div>
+
+      <div class="botoes-acao">
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          class="p-button-secondary"
+          icon="pi pi-times" 
+          (click)="cancelar()">
+        </button>
+        <button
+          pButton
+          type="submit"
+          label="Salvar" 
+          class="p-button-success"
+          icon="pi pi-check" 
+          [disabled]="formProduto.invalid">
+        </button>
+      </div>
+
+    </div>
+  </form>
 </div>

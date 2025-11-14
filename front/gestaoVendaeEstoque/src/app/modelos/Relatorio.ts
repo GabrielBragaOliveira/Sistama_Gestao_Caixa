@@ -1,3 +1,3 @@
-export interface Relatorio{
-    
+export interface Relatorio {
+
 }

@@ -1,5 +1,5 @@
-import {CanActivateFn, Router} from '@angular/router';
-import {inject} from "@angular/core";
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from "@angular/core";
 import { AuthService } from '../../service/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -18,7 +18,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   if (rolesPermitidas && !rolesPermitidas.includes(usuario.perfil)) {
     alert('Acesso negado. Você não tem permissão para acessar esta página.');
-    router.navigate(['/acesso-negado']); // ou qualquer rota de aviso
+    router.navigate(['/acesso-negado']); 
     return false;
   }
 

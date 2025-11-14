@@ -9,23 +9,27 @@ import { deactivateGuard } from './header/guard/deactivate.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login',component: LoginComponent },
-  { path: 'relatorio',component: RelatorioComponent,
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'relatorio', component: RelatorioComponent,
     canActivate: [authGuard],
     canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN', 'OPERADOR'] }
   },
-  { path: 'venda',component: VendaComponent,
+  {
+    path: 'venda', component: VendaComponent,
     canActivate: [authGuard],
     canDeactivate: [deactivateGuard],
     data: { roles: ['OPERADOR'] }
   },
-  { path: 'usuario',component: GestaoUsuarioComponent,
+  {
+    path: 'usuario', component: GestaoUsuarioComponent,
     canActivate: [authGuard],
     canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN'] }
   },
-  { path: 'estoque',component: GestaoEstoqueComponent, 
+  {
+    path: 'estoque', component: GestaoEstoqueComponent,
     canActivate: [authGuard],
     canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN'] }

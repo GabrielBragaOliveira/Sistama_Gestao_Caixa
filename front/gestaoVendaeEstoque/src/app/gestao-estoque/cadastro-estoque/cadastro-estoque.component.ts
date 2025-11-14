@@ -31,14 +31,13 @@ import { finalize } from 'rxjs';
 export class CadastroEstoqueComponent implements OnInit, OnChanges {
   @Input() id: number | null = null;
   @Input() isEdicao: boolean = false;
-  @Output() fechar = new EventEmitter<boolean>();
+  @Output() fechar = new EventEmitter();
 
   formProduto: FormGroup<{
-    codigo: FormControl<number>; 
+    codigo: FormControl<number | null>;
     nome: FormControl<string>;
     categoria: FormControl<string>;
-    quantidadeEstoque: FormControl<number>;
-    preco: FormControl<number>;
+    preco: FormControl<number | null>;
   }>;
 
   perfis = [
@@ -53,18 +52,11 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     private confirm: ConfirmationService
   ) {
     this.formProduto = this.fb.group({
-      codigo: this.fb.control<number>(0, { validators: [Validators.required], nonNullable: true }),
+      codigo: this.fb.control<number | null>(null, { validators: [Validators.required, Validators.min(1)], nonNullable: true }),
       nome: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
       categoria: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      quantidadeEstoque: this.fb.control<number>(0, { validators: [Validators.required], nonNullable: true }),
-      preco: this.fb.control<number>(0, {validators: [Validators.required], nonNullable: true })
+      preco: this.fb.control<number | null>(null, { validators: [Validators.required, Validators.min(0.01)], nonNullable: true })
     });
-  }
-
-  ngOnInit(): void {
-    if (this.isEdicao && this.id) {
-      this.carregarProdutoParaEdicao();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -73,17 +65,14 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnInit(): void {
+    this.configurarFormulario();
+  }
+
   private configurarFormulario(): void {
     this.formProduto.reset();
-
-    this.formProduto.get('senha')?.setValidators([Validators.required]);
-    this.formProduto.get('senha')?.updateValueAndValidity();
-
     if (this.isEdicao && this.id) {
       this.carregarProdutoParaEdicao();
-      
-      this.formProduto.get('senha')?.clearValidators();
-      this.formProduto.get('senha')?.updateValueAndValidity();
     }
   }
 
@@ -95,8 +84,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
           codigo: Produto.codigo,
           nome: Produto.nome,
           categoria: Produto.categoria,
-          quantidadeEstoque: Produto.quantidadeEstoque,
-          preco: Produto.preco, 
+          preco: Produto.preco,
         });
         this.service.loading.set(false);
       },
@@ -107,14 +95,20 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
       }
     });
   }
-  
-  salvar(): void{
-    if (this.formProduto.valid) {
-      const Produto: ProdutoRequest = this.formProduto.getRawValue();
 
-     
-      const acao = this.isEdicao && this.id 
-        ? this.service.atualizar(this.id!, Produto) 
+  salvar(): void {
+    if (this.formProduto.valid) {
+      const rawValue = this.formProduto.getRawValue();
+
+      const Produto: ProdutoRequest = {
+        codigo: rawValue.codigo!,
+        nome: rawValue.nome,
+        categoria: rawValue.categoria,
+        preco: rawValue.preco!
+      };
+
+      const acao = this.isEdicao && this.id
+        ? this.service.atualizar(this.id!, Produto)
         : this.service.criar(Produto);
 
       this.service.loading.set(true);
@@ -124,9 +118,9 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
         next: () => {
           this.msg.add({ severity: 'success', summary: 'Sucesso', detail: msgSucesso });
           if (this.isEdicao) {
-            this.fechar.emit(true); 
+            this.fechar.emit();
           } else {
-            this.cancelar(); 
+            this.cancelar();
           }
         },
         error: (err) => this.tratarErroHttp(err)
@@ -135,7 +129,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
   }
 
   cancelar(): void {
-    this.fechar.emit(false);
+    this.fechar.emit();
   }
 
   private tratarErroHttp(err: any) {
