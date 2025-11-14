@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Aluno
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecursoNaoEncontradoException extends RuntimeException {
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+public class ErroInternoException extends RuntimeException {
 
-    //Erro 404
-    public RecursoNaoEncontradoException(String message) {
+    public ErroInternoException(String message) {
         super(message);
     }
 
-    public RecursoNaoEncontradoException(String message, Throwable cause) {
+    public ErroInternoException(String message, Throwable cause) {
         super(message, cause);
     }
 }

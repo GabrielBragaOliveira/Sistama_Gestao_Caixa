@@ -21,7 +21,7 @@ public class ProdutoMapper {
         produto.setNome(dto.nome());
         produto.setCodigo(dto.codigo());
         produto.setCategoria(dto.categoria());
-        produto.setQuantidadeEstoque(dto.quantidadeEstoque());
+        produto.setQuantidadeEstoque(0);
         produto.setPreco(dto.preco());
         return produto;
     }

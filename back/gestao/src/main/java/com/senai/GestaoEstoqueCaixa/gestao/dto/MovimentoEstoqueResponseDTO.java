@@ -17,6 +17,5 @@ public record MovimentoEstoqueResponseDTO(
         Integer quantidade,
         String motivo,
         LocalDateTime data,
-        Long usuarioId,
-        String nomeUsuario
+        Long usuarioId
 ) {}

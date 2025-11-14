@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Aluno
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecursoNaoEncontradoException extends RuntimeException {
+@ResponseStatus(HttpStatus.CONFLICT)
+public class ConflitoException extends RuntimeException {
 
-    //Erro 404
-    public RecursoNaoEncontradoException(String message) {
+    //Erro 409
+    //Usado quando existe conflito de estado, ex: email já cadastrado.
+    public ConflitoException(String message) {
         super(message);
     }
 
-    public RecursoNaoEncontradoException(String message, Throwable cause) {
+    public ConflitoException(String message, Throwable cause) {
         super(message, cause);
     }
 }

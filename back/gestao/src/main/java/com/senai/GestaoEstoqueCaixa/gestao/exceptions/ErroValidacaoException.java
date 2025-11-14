@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Aluno
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecursoNaoEncontradoException extends RuntimeException {
+@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+public class ErroValidacaoException extends RuntimeException {
 
-    //Erro 404
-    public RecursoNaoEncontradoException(String message) {
+    //Erro 422
+    //Quando os dados estão corretos estruturalmente, mas inválidos semanticamente.
+    public ErroValidacaoException(String message) {
         super(message);
     }
 
-    public RecursoNaoEncontradoException(String message, Throwable cause) {
+    public ErroValidacaoException(String message, Throwable cause) {
         super(message, cause);
     }
 }
