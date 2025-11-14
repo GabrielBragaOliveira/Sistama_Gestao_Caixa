@@ -1,56 +1,85 @@
 <p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>
+<p-confirmDialog header="Confirmação" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 <div class="pesquisaBar">
+
   <div class="filters">
-    <span>
-      <label>Pesquisa:</label>
-      <input pInputText type="text" [(ngModel)]="filtroString" placeholder="Codigo , Nomes Ou Categoria" (input)="onFiltroStringChange()" />
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" [(ngModel)]="filtroString" (input)="onFiltroStringChange()"
+        placeholder="Buscar por Código ou Nome..." />
     </span>
 
-    <span>
-      <label>Status:</label>
-      <p-selectButton
-        [options]="statusOptionsAtivo"
-        optionLabel="label"
-        optionValue="value"
-        [(ngModel)]="filtroAtivo"
-        (onChange)="carregar()">
-      </p-selectButton>
-    </span>
+    <p-selectButton [options]="opcoesStatus" [(ngModel)]="filtroAtivo" (onChange)="onFiltroChange()" optionLabel="label"
+      optionValue="value">
+    </p-selectButton>
+
+    <p-dropdown [options]="opcoesOrdem" [(ngModel)]="filtroOrdemQtd" (onChange)="onFiltroChange()"
+      placeholder="Ordenar por Quantidade">
+    </p-dropdown>
 
     <button pButton label="Limpar" class="p-button-secondary" (click)="limparFiltros()"></button>
   </div>
-
-  <button pButton label="Novo Produto" class="p-button-success" (click)="novo()"></button>
+  <button pButton label="Novo Produto" icon="pi pi-plus" class="p-button-success" (click)="novoProduto()">
+  </button>
 </div>
 
-<p-table [value]="produtos" [paginator]="true" [rows]="10" [loading]="service.loading() "[tableStyle]="{'table-layout': 'fixed', 'width': '100%'}" >
+<p-table [value]="produtos" [paginator]="true" [rows]="10" responsiveLayout="scroll">
   <ng-template pTemplate="header">
     <tr>
-      <th>Codigo</th>
+      <th style="width: 10%">Código</th>
       <th>Nome</th>
-      <th>Categoria</th>
-      <th>Quantidade</th>
-      <th>Valor Unitario</th>
-      <th>Status</th>
-      <th style="width: 220px;">Ações</th>
+      <th style="width: 15%">Categoria</th>
+      <th style="width: 12%">Preço</th>
+      <th style="width: 15%">Qtd. em Estoque</th>
+      <th style="width: 10%">Status</th>
+      <th style="width: 10%">Ações</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-produto>
+
+  <ng-template pTemplate="body" let-p>
+  <tr>
+    <td>{{ p.codigo }}</td>
+    
+    <td>{{ p.nome }}</td>
+    
+    <td>{{ p.categoria }}</td>
+    
+    <td>{{ p.preco | currency:'BRL' }}</td>
+    
+    <td>
+      <div class="col-quantidade">
+        <span>{{ p.quantidadeEstoque }}</span>
+        <button 
+          pButton 
+          pRipple 
+          type="button" 
+          icon="pi pi-pencil" 
+          class="p-button-rounded p-button-text p-button-sm"
+          (click)="abrirModalAjuste(p)"
+          pTooltip="Ajustar Estoque" 
+          tooltipPosition="top">
+        </button>
+      </div>
+    </td>
+     
+    <td>
+      <p-tag 
+        [severity]="p.ativo ? 'success' : 'danger'" 
+        [value]="p.ativo ? 'Ativo' : 'Inativo'">
+      </p-tag>
+    </td>
+      
+    <td>
+      <button pButton pRipple type="button" label="Editar" icon="pi pi-pencil" class="p-button-text p-button-info" (click)="editar(p.id)" [disabled]="!p.ativo"></button>
+      <button pButton pRipple type="button" label="Inativar" icon="pi pi-ban" class="p-button-danger p-button-text p-button-sm" (click)="confirmarInativacao(p)" [disabled]="!p.ativo"></button>
+    </td>
+  </tr>
+</ng-template>
+
+  <ng-template pTemplate="emptymessage">
     <tr>
-      <td>{{ produto.codigo }}</td>
-      <td>{{ produto.nome }}</td>
-      <td>{{ produto.categoria }}</td>
-      <td>{{ produto.quantidadeEstoque }}</td>
-      <td>{{ produto.preco | currency:'BRL':'symbol':'1.2-2' }}</td>
-      <td>
-        <p-tag [severity]="produto.ativo ? 'success' : 'danger'" [value]="produto.ativo ? 'Ativo' : 'Inativo'"></p-tag>
-      </td>
-      <td>
-        <button pButton label="Editar" icon="pi pi-pencil" (click)="editar(produto.id)"[disabled]="!produto.ativo"class="p-button-text p-button-info" ></button>
-        <button pButton label="Inativar" icon="pi pi-ban" class="p-button-danger p-button-text" (click)="confirmarInativacao(produto)" [disabled]="!produto.ativo"></button>
-      </td>
+      <td colspan="7">Nenhum produto encontrado.</td>
     </tr>
   </ng-template>
 </p-table>
@@ -59,16 +88,10 @@
   Total: {{ produtos.length }}
 </div>
 
-<p-dialog 
-  [(visible)]="abrirCadastro" 
-  [modal]="true" 
-  [draggable]="false" 
-  [resizable]="false"
-  [closable]="false"
-  (onHide)="onFormularioFechado(false)"> 
-    <app-cadastro-estoque
-      [id]="idEditando"
-      [isEdicao]="isEdicao"
-      (fechar)="onFormularioFechado($event)"
-    ></app-cadastro-estoque>
+<p-dialog [(visible)]="modalAjusteVisivel" [modal]="true" [draggable]="false" [resizable]="false" [closable]="false" styleClass="dialog-cadastro-transparente">
+  <app-ajuste-estoque [produto]="produtoEditando" (fechar)="onModalAjusteFechado()"></app-ajuste-estoque>
+</p-dialog>
+
+<p-dialog [(visible)]="abrirCadastro" [modal]="true" [draggable]="false" [resizable]="false" [closable]="false" styleClass="dialog-cadastro-transparente">
+  <app-cadastro-estoque [id]="idEditando" [isEdicao]="isEdicao" (fechar)="onFormularioFechado()"></app-cadastro-estoque>
 </p-dialog>

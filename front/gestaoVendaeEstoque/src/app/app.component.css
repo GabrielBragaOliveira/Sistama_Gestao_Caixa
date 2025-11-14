@@ -1,7 +1,16 @@
 .app-content {
-  background: linear-gradient(135deg, #eaf6f6, #cce3dc);
+  background: var(--surface-ground);
   min-height: 100vh;
-  padding-left: 30px;
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+.app-content.sidebar-fechada {
+  margin-left: 0px;
+}
+
+.app-content.fullscreen {
+  margin-left: 0;
 }
 
 .top-loading-bar {
@@ -10,7 +19,7 @@
   left: 0;
   height: 4px;
   width: 100%;
-  background: linear-gradient(90deg, #2ab3a3, #4be0ce, #2ab3a3);
+  background: var(--loading-bar-gradient);
   background-size: 200% 100%;
   animation: loadingAnimation 1.5s linear infinite;
   z-index: 9999;
@@ -20,6 +29,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }

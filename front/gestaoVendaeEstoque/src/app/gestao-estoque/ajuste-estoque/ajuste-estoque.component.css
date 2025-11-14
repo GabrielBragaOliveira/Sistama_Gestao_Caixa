@@ -1,0 +1,58 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.card {
+    background: var(--surface-card);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h2 {
+    text-align: center;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.card form .p-fluid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.p-field {
+    width: 100%;
+}
+
+.error-message {
+    color: var(--red-500);
+    font-size: 0.875rem;
+    padding-left: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.botoes-acao {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tipo-movimentacao {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.5rem;
+}
+
+.p-field-radiobutton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

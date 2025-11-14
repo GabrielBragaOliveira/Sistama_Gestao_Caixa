@@ -6,6 +6,7 @@ import { ProdutoRequest } from '../../modelos/DTOs/ProdutoDTO';
 import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgIf, CommonModule } from '@angular/common';
@@ -22,6 +23,7 @@ import { finalize } from 'rxjs';
     InputTextModule,
     ButtonModule,
     ToastModule,
+    InputNumberModule,
   ],
   templateUrl: './cadastro-estoque.component.html',
   styleUrl: './cadastro-estoque.component.css'
@@ -29,13 +31,13 @@ import { finalize } from 'rxjs';
 export class CadastroEstoqueComponent implements OnInit, OnChanges {
   @Input() id: number | null = null;
   @Input() isEdicao: boolean = false;
-  @Output() fechar = new EventEmitter<boolean>();
+  @Output() fechar = new EventEmitter();
 
   formProduto: FormGroup<{
-    nome: FormControl<string>; 
-    email: FormControl<string>;
-    perfil: FormControl<Perfils|''>;
-    senha: FormControl<string>;
+    codigo: FormControl<number | null>;
+    nome: FormControl<string>;
+    categoria: FormControl<string>;
+    preco: FormControl<number | null>;
   }>;
 
   perfis = [
@@ -50,19 +52,11 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     private confirm: ConfirmationService
   ) {
     this.formProduto = this.fb.group({
+      codigo: this.fb.control<number | null>(null, { validators: [Validators.required, Validators.min(1)], nonNullable: true }),
       nome: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
-      email: this.fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
-      perfil: this.fb.control<Perfils | ''>('', { validators: [Validators.required], nonNullable: true }),
-      senha: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      categoria: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      preco: this.fb.control<number | null>(null, { validators: [Validators.required, Validators.min(0.01)], nonNullable: true })
     });
-  }
-
-  ngOnInit(): void {
-    if (this.isEdicao && this.id) {
-      this.carregarProdutoParaEdicao();
-      this.formProduto.get('senha')?.clearValidators();
-      this.formProduto.get('senha')?.updateValueAndValidity();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -71,82 +65,77 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnInit(): void {
+    this.configurarFormulario();
+  }
+
   private configurarFormulario(): void {
     this.formProduto.reset();
-
-    this.formProduto.get('senha')?.setValidators([Validators.required]);
-    this.formProduto.get('senha')?.updateValueAndValidity();
-
     if (this.isEdicao && this.id) {
       this.carregarProdutoParaEdicao();
-      
-      this.formProduto.get('senha')?.clearValidators();
-      this.formProduto.get('senha')?.updateValueAndValidity();
     }
   }
 
   private carregarProdutoParaEdicao(): void {
-    this.service.loading.set(true);/*
+    this.service.loading.set(true);
     this.service.buscarPorId(this.id!).subscribe({
       next: (Produto) => {
         this.formProduto.patchValue({
+          codigo: Produto.codigo,
           nome: Produto.nome,
-          email: Produto.email,
-          perfil: Produto.perfil,
-          senha: Produto.senha, 
-        });*/
-        this.service.loading.set(false);/*
+          categoria: Produto.categoria,
+          preco: Produto.preco,
+        });
+        this.service.loading.set(false);
       },
       error: () => {
         this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar dados para edição' });
         this.service.loading.set(false);
         this.cancelar();
       }
-    });*/
+    });
   }
-  
-  salvar(): void{
-    /*
+
+  salvar(): void {
     if (this.formProduto.valid) {
-      const raw = this.formProduto.getRawValue();
+      const rawValue = this.formProduto.getRawValue();
+
       const Produto: ProdutoRequest = {
-        ...raw,
-        perfil: raw.perfil as Perfils 
+        codigo: rawValue.codigo!,
+        nome: rawValue.nome,
+        categoria: rawValue.categoria,
+        preco: rawValue.preco!
       };
 
-      if (this.isEdicao && !raw.senha) {
-        delete (Produto as any).senha; 
-      }
-      const acao = this.isEdicao && this.id 
-        ? this.service.atualizar(this.id!, Produto) 
+      const acao = this.isEdicao && this.id
+        ? this.service.atualizar(this.id!, Produto)
         : this.service.criar(Produto);
 
       this.service.loading.set(true);
 
-      const msgSucesso = this.isEdicao ? 'Funcionário atualizado' : 'Funcionário cadastrado';
+      const msgSucesso = this.isEdicao ? 'Produto atualizado' : 'Produto cadastrado';
       acao.pipe(finalize(() => this.service.loading.set(false))).subscribe({
         next: () => {
           this.msg.add({ severity: 'success', summary: 'Sucesso', detail: msgSucesso });
           if (this.isEdicao) {
-            this.fechar.emit(true); 
+            this.fechar.emit();
           } else {
-            this.cancelar(); 
+            this.cancelar();
           }
         },
         error: (err) => this.tratarErroHttp(err)
       });
-    }*/
+    }
   }
 
   cancelar(): void {
-    this.fechar.emit(false);
+    this.fechar.emit();
   }
 
   private tratarErroHttp(err: any) {
     const status = err?.status;
-    if (status === 409) {
-      this.msg.add({ severity: 'warn', summary: 'Conflito', detail: 'E-mail já cadastrado' });
-    } else if (status === 400) {
+
+    if (status === 400) {
       this.msg.add({ severity: 'warn', summary: 'Regras', detail: err?.error?.message || 'Violação de regra de negócio' });
     } else {
       this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar' });

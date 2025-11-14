@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -28,7 +27,7 @@ import { AuthService } from '../service/auth.service';
 export class LoginComponent {
 
   formLogin: FormGroup<{
-    email: FormControl<string>; 
+    email: FormControl<string>;
     senha: FormControl<string>
   }>;
 
@@ -42,10 +41,10 @@ export class LoginComponent {
     });
   }
 
-  login(): void{
-  if (this.formLogin.valid) {
-    const loginData: UsuarioLogin = this.formLogin.getRawValue();
-    this.authService.login(loginData);
+  login(): void {
+    if (this.formLogin.valid) {
+      const loginData: UsuarioLogin = this.formLogin.getRawValue();
+      this.authService.login(loginData);
+    }
   }
-}
 }

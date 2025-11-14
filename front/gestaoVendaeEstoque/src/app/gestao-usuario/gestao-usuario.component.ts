@@ -15,6 +15,7 @@ import { UsuarioResponse } from '../modelos/DTOs/UsuarioDTOs';
 import { CadastroUsuarioComponent } from "./cadastro-usuario/cadastro-usuario.component";
 import { finalize } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
+import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-gestao-usuario',
@@ -31,11 +32,11 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     CadastroUsuarioComponent,
     DialogModule
-],
+  ],
   templateUrl: './gestao-usuario.component.html',
   styleUrl: './gestao-usuario.component.css'
 })
-export class GestaoUsuarioComponent implements OnInit{
+export class GestaoUsuarioComponent implements OnInit {
 
   filtroString: string = '';
   filtroAtivo: boolean | null = null;
@@ -62,23 +63,25 @@ export class GestaoUsuarioComponent implements OnInit{
     protected service: UsuarioService,
     private msg: MessageService,
     private confirm: ConfirmationService,
-  ) {}
+    protected auth: AuthService,
+  ) { }
 
   ngOnInit(): void {
-    this.carregar();
+    this.onFiltroChange();
+
   }
 
-  carregar(): void{
+  onFiltroChange(): void {
     this.service.loading.set(true);
 
-    const params : any = {};
-    
+    const params: any = {};
+
     if (this.filtroString.trim()) params.filtro = this.filtroString.trim();
     if (this.filtroAtivo !== null) params.ativo = this.filtroAtivo;
     if (this.filtroPerfil !== null) params.perfil = this.filtroPerfil;
 
     this.service.listar(params).pipe(finalize(() => this.service.loading.set(false))).subscribe({
-      next: (lista) =>{
+      next: (lista) => {
         this.usuarios = lista;
       },
       error: () => {
@@ -91,7 +94,7 @@ export class GestaoUsuarioComponent implements OnInit{
     this.filtroString = '';
     this.filtroAtivo = null;
     this.filtroPerfil = null;
-    this.carregar();
+    this.onFiltroChange();
   }
 
   confirmarInativacao(usuario: UsuarioResponse): void {
@@ -109,7 +112,7 @@ export class GestaoUsuarioComponent implements OnInit{
     this.service.inativar(id).pipe(finalize(() => this.service.loading.set(false))).subscribe({
       next: () => {
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Usuario inativado' });
-        this.carregar();
+        this.onFiltroChange();
       },
       error: () => {
         this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível inativar' });
@@ -121,27 +124,24 @@ export class GestaoUsuarioComponent implements OnInit{
   onFiltroStringChange(): void {
     clearTimeout(this.filtroTimeout);
     this.filtroTimeout = setTimeout(() => {
-      this.carregar();
+      this.onFiltroChange();
     }, 500);
   }
 
-  novo() : void{
+  novo(): void {
     this.abrirCadastro = true
     this.idEditando = null
     this.isEdicao = false
   }
-  editar(id: number) : void {
+  editar(id: number): void {
     this.abrirCadastro = true
     this.idEditando = id
     this.isEdicao = true
   }
 
-  onFormularioFechado(recarregar: boolean): void {
+  onFormularioFechado(): void {
     this.abrirCadastro = false;
     this.idEditando = null;
-
-    if (recarregar) {
-      this.carregar();
-    }
+    this.onFiltroChange();
   }
 }

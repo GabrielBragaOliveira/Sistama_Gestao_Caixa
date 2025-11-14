@@ -1,11 +1,11 @@
 import { Perfils } from "../../enum/Perfil";
 
-export interface UsuarioLogin{
+export interface UsuarioLogin {
   email: string;
   senha: string;
 }
 
-export interface UsuarioResponse{
+export interface UsuarioResponse {
   id: number;
   nome: string;
   email: string;
@@ -14,7 +14,7 @@ export interface UsuarioResponse{
   ativo: boolean;
 }
 
-export interface UsuarioRequest{
+export interface UsuarioRequest {
   nome: string;
   email: string;
   perfil: Perfils;
