@@ -9,17 +9,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  *
- * @author Aluno
+ * @author CacatsViado
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecursoNaoEncontradoException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class RequisicaoInvalidaException extends RuntimeException {
 
-    //Erro 404
-    public RecursoNaoEncontradoException(String message) {
+    //Erro 400 
+    //Usada quando o cliente envia dados inválidos.
+    public RequisicaoInvalidaException(String message) {
         super(message);
     }
 
-    public RecursoNaoEncontradoException(String message, Throwable cause) {
+    public RequisicaoInvalidaException(String message, Throwable cause) {
         super(message, cause);
     }
 }

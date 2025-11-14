@@ -28,10 +28,6 @@ public record ProdutoRequestDTO(
     @NotBlank(message = "A categoria é obrigatória.")
     String categoria,
 
-    @NotNull(message = "A quantidade em estoque é obrigatória.")
-    @Min(value = 0, message = "A quantidade não pode ser negativa.")
-    Integer quantidadeEstoque,
-
     @NotNull(message = "O preço é obrigatório.")
     @Min(value = 0, message = "O preço não pode ser negativo.")
     BigDecimal preco

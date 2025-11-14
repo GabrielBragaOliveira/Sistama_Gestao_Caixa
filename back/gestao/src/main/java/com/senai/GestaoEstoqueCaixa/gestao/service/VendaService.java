@@ -13,13 +13,14 @@ import com.senai.GestaoEstoqueCaixa.gestao.entity.Produto;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RequisicaoInvalidaException;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.ItemVendaMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.VendaMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ItemVendaRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.VendaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,38 +49,28 @@ public class VendaService {
     @Autowired
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
-    public VendaService(
-            VendaRepository vendaRepository,
-            ItemVendaRepository itemVendaRepository,
-            ProdutoRepository produtoRepository,
-            UsuarioRepository usuarioRepository,
-            MovimentacaoEstoqueService movimentacaoEstoqueService) {
-        this.vendaRepository = vendaRepository;
-        this.itemVendaRepository = itemVendaRepository;
-        this.produtoRepository = produtoRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.movimentacaoEstoqueService = movimentacaoEstoqueService;
-    }
-
     @Transactional
     public VendaResponseDTO registrarVenda(VendaRequestDTO dto) {
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         List<ItemVenda> itens = new ArrayList<>();
 
         for (ItemVendaRequestDTO itemDTO : dto.itens()) {
             Produto produto = produtoRepository.findByIdForUpdate(itemDTO.produtoId())
-                    .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado: ID " + itemDTO.produtoId()));
+                    .orElseThrow(() -> new RecursoNaoEncontradoException(
+                    "Produto não encontrado: ID " + itemDTO.produtoId()));
 
             if (itemDTO.precoUnitario() == null
                     || produto.getPreco() == null
                     || itemDTO.precoUnitario().compareTo(produto.getPreco()) != 0) {
-                throw new IllegalArgumentException("Preço unitário inválido para o produto: " + produto.getNome());
+                throw new RequisicaoInvalidaException(
+                        "Preço unitário inválido para o produto: " + produto.getNome());
             }
 
             if (itemDTO.quantidade() > produto.getQuantidadeEstoque()) {
-                throw new IllegalArgumentException("Estoque insuficiente para o produto: " + produto.getNome());
+                throw new RequisicaoInvalidaException(
+                        "Estoque insuficiente para o produto: " + produto.getNome());
             }
 
             ItemVenda item = ItemVendaMapper.toEntity(itemDTO, produto);
@@ -95,9 +86,9 @@ public class VendaService {
 
         if (venda.getValorRecebido() == null
                 || venda.getValorRecebido().compareTo(venda.getValorTotal()) < 0) {
-            throw new IllegalArgumentException(
+            throw new RequisicaoInvalidaException(
                     "Valor recebido R$" + venda.getValorRecebido()
-                    + " é menor que o valor total da venda R$" + venda.getValorTotal() 
+                    + " é menor que o valor total da venda R$" + venda.getValorTotal()
             );
         }
 
@@ -125,7 +116,7 @@ public class VendaService {
 
     public VendaResponseDTO buscarPorId(Long id) {
         Venda venda = vendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Venda não encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Venda não encontrada"));
         return VendaMapper.toResponseDTO(venda);
     }
 }

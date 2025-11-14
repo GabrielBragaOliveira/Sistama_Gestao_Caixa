@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,18 +25,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemVendaService {
 
-    private final ItemVendaRepository itemVendaRepository;
-    private final ProdutoRepository produtoRepository;
-    private final MovimentacaoEstoqueService movimentacaoEstoqueService;
+    @Autowired
+    private ItemVendaRepository itemVendaRepository;
+    @Autowired
+    private ProdutoRepository produtoRepository;
+    @Autowired
+    private MovimentacaoEstoqueService movimentacaoEstoqueService ;
 
-    public ItemVendaService(ItemVendaRepository itemVendaRepository,
-                            ProdutoRepository produtoRepository,
-                            MovimentacaoEstoqueService movimentacaoEstoqueService) {
-        this.itemVendaRepository = itemVendaRepository;
-        this.produtoRepository = produtoRepository;
-        this.movimentacaoEstoqueService = movimentacaoEstoqueService;
-    }
-    
     @Transactional
     public ItemVendaResponseDTO criarItemVenda(ItemVendaRequestDTO dto) {
         Produto produto = produtoRepository.findById(dto.produtoId())
@@ -69,7 +65,7 @@ public class ItemVendaService {
                 .orElseThrow(() -> new EntityNotFoundException("Item de venda não encontrado"));
         return ItemVendaMapper.toResponseDTO(item);
     }
-    
+
     @Transactional
     public void deletarItem(Long id) {
         if (!itemVendaRepository.existsById(id)) {

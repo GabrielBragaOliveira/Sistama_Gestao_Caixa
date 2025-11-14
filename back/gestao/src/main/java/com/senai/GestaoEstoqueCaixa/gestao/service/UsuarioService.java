@@ -9,10 +9,13 @@ import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioRequestDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.UsuarioEnum;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ConflitoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ErroValidacaoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RequisicaoInvalidaException;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.UsuarioMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,9 +39,6 @@ public class UsuarioService {
 
     //@Autowired
     //private LoginMapper LoginMapper;
-    public UsuarioService(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
-    }
 
     public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
 
@@ -55,29 +55,21 @@ public class UsuarioService {
 
     public UsuarioResponseDTO buscarPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado com ID: " + id));
-        return usuarioMapper.toResponseDTO(usuario);
-    }
-
-    public UsuarioResponseDTO buscarPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado com email: " + email));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
         return usuarioMapper.toResponseDTO(usuario);
     }
 
     @Transactional
     public UsuarioResponseDTO criar(UsuarioRequestDTO dto) {
 
-        if (dto.nome() == null && dto.nome().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome do usuário é obrigatório.");
+        if (dto.nome() == null || dto.nome().isBlank()) {
+            throw new ErroValidacaoException("O nome do usuário é obrigatório.");
         }
-        if (dto.email() == null && dto.email().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O email do usuário é obrigatório.");
+        if (dto.email() == null || dto.email().isBlank()) {
+            throw new ErroValidacaoException("O email do usuário é obrigatório.");
         }
         if (dto.senha() == null || dto.senha().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha do usuário é obrigatória.");
+            throw new ErroValidacaoException("A senha do usuário é obrigatória.");
         }
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(dto.email());
 
@@ -92,7 +84,7 @@ public class UsuarioService {
                 usuarioRepository.save(usuario);
                 return usuarioMapper.toResponseDTO(usuario);
             } else {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um usuário ativo com este e-mail.");
+                throw new ConflitoException("Já existe um usuário ativo com este e-mail.");
             }
         }
 
@@ -106,31 +98,34 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto, String emailUsuarioLogado) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado com email: " + id));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         if (usuarioExistente.getEmail().equalsIgnoreCase(emailUsuarioLogado)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Você não pode editar seu próprio usuário.");
+            throw new RequisicaoInvalidaException("Você não pode editar seu próprio usuário.");
         }
 
         if (!usuarioExistente.isAtivo()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente usuários ativos podem ser editados.");
+            throw new RequisicaoInvalidaException("Somente usuários ativos podem ser editados.");
         }
 
-        if (dto.nome() == null || dto.nome().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome do usuário é obrigatório.");
+        if (dto.nome().isBlank() || dto.nome() == null) {
+            throw new ErroValidacaoException("O nome é obrigatório.");
         }
-        if (dto.email() == null || dto.email().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O email do usuário é obrigatório.");
+        if (dto.email().isBlank() || dto.email() == null) {
+            throw new ErroValidacaoException("O email é obrigatório.");
         }
-        if (dto.senha() == null || dto.senha().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha do usuário é obrigatória.");
+        if (dto.senha().isBlank() || dto.senha() == null) {
+            throw new ErroValidacaoException("A senha é obrigatória.");
         }
 
         if (!usuarioExistente.getEmail().equalsIgnoreCase(dto.email())
                 && usuarioRepository.existsByEmail(dto.email())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "O email informado já está cadastrado para outro usuário.");
+            throw new ConflitoException("O email informado já está cadastrado para outro usuário.");
+        }
+
+        if (!usuarioExistente.getEmail().equalsIgnoreCase(dto.email())
+                && usuarioRepository.existsByEmail(dto.email())) {
+            throw new ConflitoException("O email informado já está cadastrado para outro usuário.");
         }
 
         usuarioExistente.setNome(dto.nome());
@@ -146,12 +141,10 @@ public class UsuarioService {
     @Transactional
     public void inativar(Long id, String emailUsuarioLogado) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuário não encontrado: "));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
 
         if (usuarioExistente.getEmail().equalsIgnoreCase(emailUsuarioLogado)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Você não pode inativar o seu próprio usuário.");
+            throw new RequisicaoInvalidaException("Você não pode inativar seu próprio usuário.");
         }
 
         usuarioExistente.setAtivo(false);
