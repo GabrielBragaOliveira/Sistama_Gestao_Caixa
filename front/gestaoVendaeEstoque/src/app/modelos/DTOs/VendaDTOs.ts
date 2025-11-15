@@ -2,12 +2,9 @@ import { Usuario } from "../Usuario";
 import { ProdutoResponse } from "./ProdutoDTO";
 
 export interface VendaRequest {
-    valortotal: number;
     valorRecebido: number;
-    troco: number;
-    dataVenda: string;
-    usuarioResponsavel: Usuario;
-    listaItens: itemvendaResponse[];
+    usuarioId: number;
+    itens: itemvendaRequest[];
 }
 
 export interface VendaReponse {
@@ -17,15 +14,16 @@ export interface VendaReponse {
     troco: number;
     dataVenda: string;
     usuarioResponsavel: Usuario;
-    listaItens: itemVendaRequest[];
+    listaItens: itemVenda[];
 }
 
-export interface itemVendaRequest {
+export interface itemVenda {
     produto: ProdutoResponse;
     quantidade: number;
 }
 
-export interface itemvendaResponse {
+export interface itemvendaRequest{
     produtoId: number;
     quantidade: number;
+    precoUnitario: number;
 }

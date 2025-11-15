@@ -11,7 +11,7 @@ import { ProdutoResponse } from '../modelos/DTOs/ProdutoDTO';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { itemVendaRequest, itemvendaResponse, VendaRequest } from '../modelos/DTOs/VendaDTOs';
+import { itemVenda, itemvendaRequest , VendaRequest } from '../modelos/DTOs/VendaDTOs';
 import { Usuario } from '../modelos/Usuario';
 import { AuthService } from '../service/auth.service';
 import { InputTextModule } from 'primeng/inputtext'; 
@@ -46,7 +46,7 @@ export class VendaComponent implements OnInit{
   produtoEncontrado: ProdutoResponse | null = null; 
   quantidadeManual: number = 1;
 
-  itensDaVenda: itemVendaRequest[] = [];
+  itensDaVenda: itemVenda[] = [];
   valorTotal: number = 0;
   valorRecebido: number | null = null;
   troco: number = 0;
@@ -162,7 +162,7 @@ export class VendaComponent implements OnInit{
     this.recalcularTotal();
   }
 
-  removerItem(itemParaRemover: itemVendaRequest): void { 
+  removerItem(itemParaRemover: itemVenda): void { 
     this.itensDaVenda = this.itensDaVenda.filter(item => item !== itemParaRemover);
     this.recalcularTotal();
   }
@@ -206,18 +206,16 @@ export class VendaComponent implements OnInit{
       return;
     }
 
-    const listaItensDTO: itemvendaResponse[] = this.itensDaVenda.map(item => ({
+    const listaItensDTO: itemvendaRequest[] = this.itensDaVenda.map(item => ({
       produtoId: item.produto.id,
-      quantidade: item.quantidade
+      quantidade: item.quantidade,
+      precoUnitario: item.produto.preco
     }));
 
     const requisicaoVenda: VendaRequest = {
-      valortotal: this.valorTotal,
-      valorRecebido: this.valorRecebido,
-      troco: this.troco,
-      dataVenda: new Date().toISOString(), 
-      usuarioResponsavel: usuarioLogado as Usuario,
-      listaItens: listaItensDTO
+      valorRecebido: this.valorRecebido, 
+      usuarioId: usuarioLogado.id,
+      itens: listaItensDTO
     };
 
     console.log(requisicaoVenda)

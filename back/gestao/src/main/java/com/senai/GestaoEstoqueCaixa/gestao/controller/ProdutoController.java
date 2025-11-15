@@ -54,7 +54,7 @@ public class ProdutoController {
         return ResponseEntity.ok(atualizado);
     }
     
-    @PatchMapping("/{id}/deletar")
+    @PatchMapping("/{id}/inativar")
     public ResponseEntity<Void> inativar(@PathVariable @Valid Long id) {
         produtoService.inativar(id);
         return ResponseEntity.noContent().build();
