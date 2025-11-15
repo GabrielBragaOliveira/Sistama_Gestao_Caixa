@@ -8,8 +8,9 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ProdutoResponse } from '../../modelos/DTOs/ProdutoDTO';
-import { ProdutoService } from '../../service/Produto.Service';
 import { finalize } from 'rxjs';
+import { EstoqueService } from '../../service/Estoque.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-ajuste-estoque',
@@ -31,7 +32,8 @@ export class AjusteEstoqueComponent implements OnInit {
   descricaoAjuste: string = '';
 
   constructor(
-    private produtoService: ProdutoService,
+    private auth: AuthService,
+    private estoqueService: EstoqueService,
     private msg: MessageService
   ) { }
 
@@ -55,24 +57,22 @@ export class AjusteEstoqueComponent implements OnInit {
       produtoId: this.produto.id,
       tipo: this.tipoMovimentacao,
       quantidade: this.quantidadeAjuste,
-      descricao: this.descricaoAjuste
+      motivo: this.descricaoAjuste,
+      usuarioId: this.auth.getUsuarioLogado()!.id
     };
 
-    this.produtoService.loading.set(true);
-    // this.produtoService.ajustarEstoque(request).pipe(
-    //   finalize(() => this.produtoService.loading.set(false))
-    // ).subscribe({
-    //   next: () => {
-    //     this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado.' });
-    //     this.fechar.emit(true); // Emite 'true' para recarregar
-    //   },
-    //   error: (err) => this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao ajustar estoque.' })
-    // });
+    this.estoqueService.loading.set(true);
 
-    // Simulação
-    this.produtoService.loading.set(false);
-    this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado (Simulação).' });
-    this.fechar.emit();
+    
+     this.estoqueService.ajustarEstoque(request).pipe(
+       finalize(() => this.estoqueService.loading.set(false))
+     ).subscribe({
+       next: () => {
+         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado.' });
+         this.fechar.emit(true); 
+       },
+       error: (err) => this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao ajustar estoque.' })
+     });
   }
 
   cancelar(): void {

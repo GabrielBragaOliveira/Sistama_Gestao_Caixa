@@ -118,6 +118,6 @@ public class ProdutoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
 
         produtoExistente.setAtivo(false);
-        produtoRepository.delete(produtoExistente);
+        produtoRepository.save(produtoExistente);
     }
 }

@@ -38,9 +38,9 @@ public class MovimentacaoEstoqueService {
     private ProdutoRepository produtoRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Transactional
-    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto, String emailUsuario) {
+    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto) {
 
         Produto produto = produtoRepository.findById(dto.produtoId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
@@ -49,7 +49,7 @@ public class MovimentacaoEstoqueService {
             produto.setQuantidadeEstoque(0);
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         MovimentoEnum tipo = MovimentoEnum.valueOf(dto.tipo().trim().toUpperCase());

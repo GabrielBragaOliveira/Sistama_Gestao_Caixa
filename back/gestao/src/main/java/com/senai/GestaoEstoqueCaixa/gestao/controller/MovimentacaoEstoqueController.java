@@ -39,13 +39,12 @@ public class MovimentacaoEstoqueController {
     }
 
     @PostMapping
-    public ResponseEntity<MovimentoEstoqueResponseDTO> criarMovimentacao(
-            @Valid @RequestBody MovimentoEstoqueRequestDTO dto,
-            @RequestHeader String emailUsuario) {
+public ResponseEntity<MovimentoEstoqueResponseDTO> criarMovimentacao(
+        @Valid @RequestBody MovimentoEstoqueRequestDTO dto) {
 
-        MovimentoEstoqueResponseDTO responseDTO = service.criarMovimentacao(dto, emailUsuario);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-    }
+    MovimentoEstoqueResponseDTO response = service.criarMovimentacao(dto);
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
+}
 
     @GetMapping
     public ResponseEntity<List<MovimentoEstoqueResponseDTO>> listarMovimentacoes() {
