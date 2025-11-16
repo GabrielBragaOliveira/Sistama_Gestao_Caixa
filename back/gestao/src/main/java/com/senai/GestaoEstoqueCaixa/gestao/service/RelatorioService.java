@@ -5,13 +5,20 @@
 package com.senai.GestaoEstoqueCaixa.gestao.service;
 
 import com.senai.GestaoEstoqueCaixa.gestao.dto.FiltroRelatorioVendaDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.MovimentoEstoqueResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioDetalheVendaResponse;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResumoDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.entity.MovimentacaoEstoque;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
+import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
+import com.senai.GestaoEstoqueCaixa.gestao.mapper.MovimentoMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.VendaMapper;
+import com.senai.GestaoEstoqueCaixa.gestao.repository.MovimentacaoEstoqueRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.VendaRepository;
 import java.util.List;
@@ -30,6 +37,9 @@ public class RelatorioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private MovimentacaoEstoqueRepository movimentacaoEstoqueRepository;
 
     public List<RelatorioResumoVendaResponse> gerarResumo(FiltroRelatorioVendaDTO filtro) {
 
@@ -57,5 +67,27 @@ public class RelatorioService {
                 VendaMapper.toResponseDTO(venda),
                 userDTO
         );
+    }
+
+    public List<VendasPorOperadorResponseDTO> vendasPorOperador() {
+        return vendaRepository.relatorioVendasPorOperador();
+    }
+
+    public List<VendasPorMesResponseDTO> vendasPorMes() {
+        return vendaRepository.relatorioVendasPorMes();
+    }
+
+    public List<MovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(Long produtoId) {
+
+        List<MovimentacaoEstoque> lista = movimentacaoEstoqueRepository
+                .findByProdutoId(produtoId)
+                .stream()
+                .filter(mov -> mov.getTipo() == MovimentoEnum.ENTRADA
+                || mov.getTipo() == MovimentoEnum.SAIDA)
+                .toList();
+        
+        return lista.stream()
+                .map(MovimentoMapper::toResponseDTO)
+                .toList();
     }
 }

@@ -102,6 +102,7 @@ public class VendaService {
             mov.setQuantidade(item.getQuantidade());
             mov.setMotivo("Venda ID " + vendaSalva.getId());
             mov.setData(LocalDate.now());
+            mov.setUsuarioResponsavel(usuario);
             movimentacaoEstoqueService.registrarMovimentacao(mov);
         }
 

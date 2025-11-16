@@ -5,10 +5,11 @@
 package com.senai.GestaoEstoqueCaixa.gestao.repository;
 
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,10 +41,38 @@ public interface VendaRepository extends JpaRepository<Venda, Long> {
             (:usuarioId IS NULL OR u.id = :usuarioId)
     """)
     List<RelatorioResumoVendaResponse> gerarRelatorioResumoComFiltros(
-            @Param("dataInicial") LocalDate  dataInicial,
-            @Param("dataFinal") LocalDate  dataFinal,
+            @Param("dataInicial") LocalDate dataInicial,
+            @Param("dataFinal") LocalDate dataFinal,
             @Param("valorMin") BigDecimal valorMin,
             @Param("valorMax") BigDecimal valorMax,
             @Param("usuarioId") Long usuarioId
     );
+
+    @Query("""
+    SELECT new com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO(
+        u.id,
+        u.nome,
+        u.email,
+        COUNT(v.id),
+        SUM(v.valorTotal)
+    )
+        FROM Venda v
+        JOIN v.usuarioResponsavel u
+        GROUP BY u.id, u.nome, u.email
+        ORDER BY SUM(v.valorTotal) DESC
+    """)
+    List<VendasPorOperadorResponseDTO> relatorioVendasPorOperador();
+
+    @Query("""
+    SELECT new com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO(
+        EXTRACT(YEAR FROM v.dataVenda),
+        EXTRACT(MONTH FROM v.dataVenda),
+        COUNT(v.id),
+        SUM(v.valorTotal)
+    )
+        FROM Venda v
+        GROUP BY EXTRACT(YEAR FROM v.dataVenda), EXTRACT(MONTH FROM v.dataVenda)
+        ORDER BY EXTRACT(YEAR FROM v.dataVenda), EXTRACT(MONTH FROM v.dataVenda)
+    """)
+    List<VendasPorMesResponseDTO> relatorioVendasPorMes();
 }
