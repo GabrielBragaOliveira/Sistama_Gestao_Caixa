@@ -1,5 +1,5 @@
-import { Usuario } from "../Usuario";
 import { ProdutoResponse } from "./ProdutoDTO";
+import { UsuarioResponse } from "./UsuarioDTOs";
 
 export interface VendaRequest {
     valorRecebido: number;
@@ -13,7 +13,8 @@ export interface VendaReponse {
     valorRecebido: number;
     troco: number;
     dataVenda: string;
-    usuarioResponsavel: Usuario;
+    nome: string;
+    email: string;
     listaItens: itemVenda[];
 }
 
