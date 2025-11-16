@@ -5,8 +5,8 @@
 package com.senai.GestaoEstoqueCaixa.gestao.controller;
 
 import com.senai.GestaoEstoqueCaixa.gestao.dto.FiltroRelatorioVendaDTO;
-import com.senai.GestaoEstoqueCaixa.gestao.dto.MovimentoEstoqueResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioDetalheVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioMovimentoEstoqueResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
@@ -53,7 +53,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/movimentacoes/produto/{produtoId}")
-    public List<MovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(@PathVariable Long produtoId) {
+    public List<RelatorioMovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(@PathVariable Long produtoId) {
         return relatorioService.listarMovimentacoesPorProduto(produtoId);
     }
 

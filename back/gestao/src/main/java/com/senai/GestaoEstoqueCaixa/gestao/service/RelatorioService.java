@@ -5,13 +5,12 @@
 package com.senai.GestaoEstoqueCaixa.gestao.service;
 
 import com.senai.GestaoEstoqueCaixa.gestao.dto.FiltroRelatorioVendaDTO;
-import com.senai.GestaoEstoqueCaixa.gestao.dto.MovimentoEstoqueResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioDetalheVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioMovimentoEstoqueResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.UsuarioResumoDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
-import com.senai.GestaoEstoqueCaixa.gestao.entity.MovimentacaoEstoque;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
@@ -37,7 +36,7 @@ public class RelatorioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private MovimentacaoEstoqueRepository movimentacaoEstoqueRepository;
 
@@ -77,17 +76,13 @@ public class RelatorioService {
         return vendaRepository.relatorioVendasPorMes();
     }
 
-    public List<MovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(Long produtoId) {
+    public List<RelatorioMovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(Long produtoId) {
 
-        List<MovimentacaoEstoque> lista = movimentacaoEstoqueRepository
-                .findByProdutoId(produtoId)
+        return movimentacaoEstoqueRepository.findByProdutoId(produtoId)
                 .stream()
                 .filter(mov -> mov.getTipo() == MovimentoEnum.ENTRADA
                 || mov.getTipo() == MovimentoEnum.SAIDA)
-                .toList();
-        
-        return lista.stream()
-                .map(MovimentoMapper::toResponseDTO)
+                .map(MovimentoMapper::toRelatorioDTO)
                 .toList();
     }
 }
