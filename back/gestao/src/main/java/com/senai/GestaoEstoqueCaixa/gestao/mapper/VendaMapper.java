@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  *
- * @author Aluno
+ * @author CacatsViado
  */
 public class VendaMapper {
 

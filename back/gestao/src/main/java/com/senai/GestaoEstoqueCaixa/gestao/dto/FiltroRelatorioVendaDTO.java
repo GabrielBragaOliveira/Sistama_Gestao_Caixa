@@ -4,17 +4,18 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
-import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  *
- * @author Aluno
+ * @author CacatsViado
  */
-public record RelatorioVendasDTO(
-        List<Venda> vendas,
-        BigDecimal totalVendas,
-        Long totalItensVendidos) {
-
-}
+public record FiltroRelatorioVendaDTO(
+        LocalDate dataInicial,
+        LocalDate dataFinal,
+        BigDecimal valorMin,
+        BigDecimal valorMax,
+        Long usuarioId
+) {}

@@ -4,6 +4,7 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -16,6 +17,6 @@ public record MovimentoEstoqueResponseDTO(
         String tipo,
         Integer quantidade,
         String motivo,
-        LocalDateTime data,
+        LocalDate data,
         Long usuarioId
 ) {}

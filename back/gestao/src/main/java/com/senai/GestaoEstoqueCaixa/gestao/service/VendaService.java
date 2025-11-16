@@ -22,6 +22,7 @@ import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.VendaRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,7 @@ public class VendaService {
         }
 
         Venda venda = VendaMapper.toEntity(dto, usuario, itens);
-        venda.setDataVenda(LocalDateTime.now());
+        venda.setDataVenda(LocalDate.now());
         venda.getItens().forEach(item -> item.setVenda(venda));
 
         if (venda.getValorRecebido() == null
@@ -100,7 +101,7 @@ public class VendaService {
             mov.setTipo(MovimentoEnum.SAIDA);
             mov.setQuantidade(item.getQuantidade());
             mov.setMotivo("Venda ID " + vendaSalva.getId());
-            mov.setData(LocalDateTime.now());
+            mov.setData(LocalDate.now());
             movimentacaoEstoqueService.registrarMovimentacao(mov);
         }
 

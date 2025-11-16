@@ -10,6 +10,7 @@ import com.senai.GestaoEstoqueCaixa.gestao.entity.MovimentacaoEstoque;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Produto;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -37,7 +38,7 @@ public class MovimentoMapper {
         movimentacao.setQuantidade(dto.quantidade());
         movimentacao.setMotivo(dto.motivo());
         movimentacao.setUsuarioResponsavel(usuario);
-        movimentacao.setData(LocalDateTime.now());
+        movimentacao.setData(LocalDate.now());
         return movimentacao;
     }
 }
