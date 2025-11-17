@@ -17,6 +17,7 @@ import com.senai.GestaoEstoqueCaixa.gestao.repository.MovimentacaoEstoqueReposit
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,7 +123,7 @@ public class MovimentacaoEstoqueService {
         mov.setTipo(MovimentoEnum.SAIDA);
         mov.setQuantidade(quantidade);
         mov.setMotivo(motivo);
-        mov.setData(LocalDateTime.now());
+        mov.setData(LocalDate.now());
         repository.save(mov);
     }
 }

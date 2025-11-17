@@ -5,18 +5,14 @@
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  *
  * @author Aluno
  */
-public record MovimentoEstoqueResponseDTO(
+public record RelatorioMovimentoEstoqueResponseDTO(
         Long id,
-        Long produtoId,
         String tipo,
         Integer quantidade,
-        String motivo,
-        LocalDate data,
-        Long usuarioId
+        LocalDate data
 ) {}

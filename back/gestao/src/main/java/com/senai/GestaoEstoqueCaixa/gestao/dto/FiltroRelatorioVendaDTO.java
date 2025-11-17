@@ -7,19 +7,15 @@ package com.senai.GestaoEstoqueCaixa.gestao.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  *
- * @author Aluno
+ * @author CacatsViado
  */
-public record VendaResponseDTO(
-        Long id,
-        BigDecimal valorTotal,
-        BigDecimal valorRecebido,
-        BigDecimal troco,
-        LocalDate dataVenda,
-        Long usuarioId,
-        String nomeUsuario,
-        List<ItemVendaResponseDTO> itens
+public record FiltroRelatorioVendaDTO(
+        LocalDate dataInicial,
+        LocalDate dataFinal,
+        BigDecimal valorMin,
+        BigDecimal valorMax,
+        Long usuarioId
 ) {}

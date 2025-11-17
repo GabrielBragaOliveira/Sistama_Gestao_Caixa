@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Venda {
     private BigDecimal troco;
     
     @Column(name = "data_venda", nullable = false)
-    private LocalDateTime dataVenda = LocalDateTime.now();
+    private LocalDate dataVenda = LocalDate.now();
    
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -83,11 +84,11 @@ public class Venda {
         this.troco = troco;
     }
 
-    public LocalDateTime getDataVenda() {
+    public LocalDate getDataVenda() {
         return dataVenda;
     }
 
-    public void setDataVenda(LocalDateTime dataVenda) {
+    public void setDataVenda(LocalDate dataVenda) {
         this.dataVenda = dataVenda;
     }
 

@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { itemVenda, itemvendaRequest , VendaRequest } from '../modelos/DTOs/VendaDTOs';
-import { Usuario } from '../modelos/Usuario';
 import { AuthService } from '../service/auth.service';
 import { InputTextModule } from 'primeng/inputtext'; 
 import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';

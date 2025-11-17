@@ -4,19 +4,15 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 /**
  *
  * @author Aluno
  */
-public record MovimentoEstoqueResponseDTO(
-        Long id,
-        Long produtoId,
-        String tipo,
-        Integer quantidade,
-        String motivo,
-        LocalDate data,
-        Long usuarioId
+public record VendasPorMesResponseDTO(
+        Integer ano,
+        Integer mes,
+        Long quantidadeVendas,
+        BigDecimal totalVendido
 ) {}

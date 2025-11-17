@@ -1,0 +1,18 @@
+2025-11-12 20:39:59.737387-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'string' (TB_PRODUTO_COPY_3_0: ""CODIGO"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."TB_PRODUTO_COPY_3_0"("ID", "ATIVO", "CATEGORIA", "CODIGO", "NOME", U&"PRE\00c7O_UN\00cdTARIO", "QUANTIDADE_EM_ESTOQUE") OVERRIDING SYSTEM VALUE SELECT "ID", "ATIVO", "CATEGORIA", "CODIGO", "NOME", U&"PRE\00c7O_UN\00cdTARIO", "QUANTIDADE_EM_ESTOQUE" FROM "PUBLIC"."TB_PRODUTO" [22018-232]
+2025-11-12 20:49:19.957719-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'string' (TB_PRODUTO_COPY_3_0: ""CODIGO"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."TB_PRODUTO_COPY_3_0"("ID", "ATIVO", "CATEGORIA", "CODIGO", "NOME", U&"PRE\00c7O_UN\00cdTARIO", "QUANTIDADE_EM_ESTOQUE") OVERRIDING SYSTEM VALUE SELECT "ID", "ATIVO", "CATEGORIA", "CODIGO", "NOME", U&"PRE\00c7O_UN\00cdTARIO", "QUANTIDADE_EM_ESTOQUE" FROM "PUBLIC"."TB_PRODUTO" [22018-232]
+2025-11-12 20:49:38.428354-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "CHARACTER VARYING to DECFLOAT"; SQL statement:
+select p1_0.id,p1_0.ativo,p1_0.categoria,p1_0.codigo,p1_0.nome,p1_0.preço_unítario,p1_0.quantidade_em_estoque from tb_produto p1_0 where p1_0.codigo=? [22018-232]
+2025-11-12 20:49:45.285023-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "CHARACTER VARYING to DECFLOAT"; SQL statement:
+select p1_0.id,p1_0.ativo,p1_0.categoria,p1_0.codigo,p1_0.nome,p1_0.preço_unítario,p1_0.quantidade_em_estoque from tb_produto p1_0 where p1_0.codigo=? [22018-232]
+2025-11-16 02:48:59.880505-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_USUARIO" not found (this database is empty); SQL statement:
+select u1_0.id,u1_0.ativo,u1_0.email,u1_0.nome,u1_0.perfil,u1_0.senha from tb_usuario u1_0 where u1_0.email=? [42104-232]
+2025-11-16 02:50:55.780797-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TB_USUARIO" not found (this database is empty); SQL statement:
+select u1_0.id,u1_0.ativo,u1_0.email,u1_0.nome,u1_0.perfil,u1_0.senha from tb_usuario u1_0 where u1_0.email=? [42104-232]

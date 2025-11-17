@@ -18,6 +18,6 @@ export class EstoqueService {
     constructor(private http: HttpClient) { }
 
     ajustarEstoque(req: MovimentacaoEstoqueResquet): Observable<MovimentacaoEstoqueResquet> {
-            return this.http.post<MovimentacaoEstoqueResquet>(this.baseUrl, req);
+        return this.http.post<MovimentacaoEstoqueResquet>(this.baseUrl, req);
     }
 }

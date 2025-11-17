@@ -23,7 +23,6 @@ export class UsuarioService {
     if (params?.ativo !== undefined && params?.ativo !== null) {
       httpParams = httpParams.set('ativo', params.ativo);
     }
-    console.log(params)
     return this.http.get<UsuarioResponse[]>(this.baseUrl, { params: httpParams });
   }
 
