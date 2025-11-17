@@ -90,3 +90,10 @@
 :host ::ng-deep .row-expansion-details .p-table {
   border: 1px solid var(--surface-border);
 }
+
+.summary {
+  margin-top: 1rem;
+  text-align: right;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}

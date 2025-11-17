@@ -51,7 +51,12 @@
         <div
           *ngIf="formUsuario.get('senha')?.invalid && (formUsuario.get('senha')?.dirty || formUsuario.get('senha')?.touched)"
           class="error-message">
-          <small *ngIf="formUsuario.get('senha')?.errors?.['required']"> Senha é obrigatório. </small>
+          <small *ngIf="formUsuario.get('senha')?.errors?.['required']">
+            Senha é obrigatório.
+          </small>
+          <small *ngIf="formUsuario.get('senha')?.errors?.['pattern']">
+            A senha deve ter no mínimo 8 caracteres, 1 letra maiúscula e 1 número.
+          </small>
         </div>
       </div>
 

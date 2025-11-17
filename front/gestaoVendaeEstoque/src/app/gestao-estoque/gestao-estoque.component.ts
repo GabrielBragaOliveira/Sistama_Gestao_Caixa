@@ -20,6 +20,7 @@ import { ProdutoService } from '../service/Produto.Service';
 import { finalize } from 'rxjs';
 import { CadastroEstoqueComponent } from "./cadastro-estoque/cadastro-estoque.component";
 import { AjusteEstoqueComponent } from "./ajuste-estoque/ajuste-estoque.component";
+import { ErrorHandlingService } from '../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-gestao-estoque',
@@ -78,6 +79,7 @@ export class GestaoEstoqueComponent implements OnInit {
   constructor(
     private produtoService: ProdutoService,
     private msg: MessageService,
+    private errorHandler: ErrorHandlingService,
     private confirm: ConfirmationService
   ) { }
 
@@ -104,9 +106,7 @@ export class GestaoEstoqueComponent implements OnInit {
       next: (lista) => {
         this.produtos = lista;
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os Produtos' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     })
   }
 
@@ -153,7 +153,7 @@ export class GestaoEstoqueComponent implements OnInit {
             this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto inativado.' });
             this.onFiltroChange();
           },
-          error: () => this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao inativar produto.' })
+          error: (err) => this.errorHandler.tratarErroHttp(err)
         });
       }
     });

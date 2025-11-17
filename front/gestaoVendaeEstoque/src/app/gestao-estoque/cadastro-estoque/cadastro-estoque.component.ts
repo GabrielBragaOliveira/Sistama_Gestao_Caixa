@@ -11,6 +11,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgIf, CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+import { ErrorHandlingService } from '../../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-cadastro-estoque',
@@ -47,6 +48,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private service: ProdutoService,
+    private errorHandler: ErrorHandlingService,
     private msg: MessageService,
     private confirm: ConfirmationService
   ) {
@@ -76,7 +78,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
       preco: 0
     });
   }
-  
+
   private configurarFormulario(): void {
     this.limparFormulario();
     if (this.isEdicao && this.id) {
@@ -86,7 +88,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
 
   private carregarProdutoParaEdicao(): void {
     this.service.loading.set(true);
-    this.service.buscarPorId(this.id!).subscribe({
+    this.service.buscarPorId(this.id!).pipe(finalize(() => this.service.loading.set(false))).subscribe({
       next: (Produto) => {
         this.formProduto.patchValue({
           codigo: Produto.codigo,
@@ -94,11 +96,9 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
           categoria: Produto.categoria,
           preco: Produto.preco,
         });
-        this.service.loading.set(false);
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar dados para edição' });
-        this.service.loading.set(false);
+      error: (err) => {
+        this.errorHandler.tratarErroHttp(err)
         this.cancelar();
       }
     });
@@ -131,7 +131,10 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
             this.cancelar();
           }
         },
-        error: (err) => this.tratarErroHttp(err)
+        error: (err) => {
+          this.errorHandler.tratarErroHttp(err)
+          this.cancelar();
+        }
       });
     }
   }
@@ -140,13 +143,4 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     this.fechar.emit();
   }
 
-  private tratarErroHttp(err: any) {
-    const status = err?.status;
-
-    if (status === 400) {
-      this.msg.add({ severity: 'warn', summary: 'Regras', detail: err?.error?.message || 'Violação de regra de negócio' });
-    } else {
-      this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar' });
-    }
-  }
 }

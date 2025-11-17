@@ -16,6 +16,7 @@ import { AuthService } from '../service/auth.service';
 import { InputTextModule } from 'primeng/inputtext'; 
 import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { finalize } from 'rxjs';
+import { ErrorHandlingService } from '../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-venda',
@@ -56,6 +57,7 @@ export class VendaComponent implements OnInit{
     private produtoService: ProdutoService,
     private vendaService: VendaService,
     private authService: AuthService,
+    private errorHandler: ErrorHandlingService,
     private msg: MessageService
   ) { }
 
@@ -70,9 +72,7 @@ export class VendaComponent implements OnInit{
       next: (lista) =>{
         this.todosOsProdutos = lista;
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os Produtos' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     })
   }
 
@@ -223,9 +223,7 @@ export class VendaComponent implements OnInit{
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Venda registrada com sucesso!' });
         this.cancelarVenda(); 
       },
-      error: (err) => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao registrar a venda.' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
 
   }
