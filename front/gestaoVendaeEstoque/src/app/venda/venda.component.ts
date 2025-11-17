@@ -4,24 +4,25 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProdutoService } from '../service/Produto.Service';
 import { VendaService } from '../service/Venda.Service';
 import { ProdutoResponse } from '../modelos/DTOs/ProdutoDTO';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { itemVenda, itemvendaRequest , VendaRequest } from '../modelos/DTOs/VendaDTOs';
+import { itemVenda, itemvendaRequest, VendaRequest } from '../modelos/DTOs/VendaDTOs';
 import { AuthService } from '../service/auth.service';
-import { InputTextModule } from 'primeng/inputtext'; 
+import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { finalize } from 'rxjs';
 import { ErrorHandlingService } from '../service/ErrorHandlingService';
+import { CanComponentDeactivate } from '../modelos/DTOs/canComponentDeactivate';
 
 @Component({
   selector: 'app-venda',
   standalone: true,
-  imports:[
+  imports: [
     CommonModule,
     InputTextModule,
     FormsModule,
@@ -36,14 +37,14 @@ import { ErrorHandlingService } from '../service/ErrorHandlingService';
   templateUrl: './venda.component.html',
   styleUrl: './venda.component.css'
 })
-export class VendaComponent implements OnInit{
+export class VendaComponent implements OnInit, CanComponentDeactivate{
 
-  @ViewChild('campoBuscaAC') campoBuscaAC!: any; 
-  @ViewChild('campoQtd') campoQtd!: ElementRef; 
-  
+  @ViewChild('campoBuscaAC') campoBuscaAC!: any;
+  @ViewChild('campoQtd') campoQtd!: ElementRef;
+
   codigoOuNome: string = '';
   sugestoesProdutos: ProdutoResponse[] = [];
-  produtoEncontrado: ProdutoResponse | null = null; 
+  produtoEncontrado: ProdutoResponse | null = null;
   quantidadeManual: number = 1;
 
   itensDaVenda: itemVenda[] = [];
@@ -58,18 +59,19 @@ export class VendaComponent implements OnInit{
     private vendaService: VendaService,
     private authService: AuthService,
     private errorHandler: ErrorHandlingService,
-    private msg: MessageService
+    private msg: MessageService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
     this.produtoService.loading.set(true);
-    
-    const params : any = {};
-        
+
+    const params: any = {};
+
     params.ativo = true;
-    
+
     this.produtoService.listar(params).pipe(finalize(() => this.produtoService.loading.set(false))).subscribe({
-      next: (lista) =>{
+      next: (lista) => {
         this.todosOsProdutos = lista;
       },
       error: (err) => this.errorHandler.tratarErroHttp(err)
@@ -109,7 +111,7 @@ export class VendaComponent implements OnInit{
   onProdutoSelect(event: any): void {
     this.produtoEncontrado = event.value;
     this.quantidadeManual = 1;
-    this.focarNoInputQtd(); 
+    this.focarNoInputQtd();
   }
 
   onEnterBusca(): void {
@@ -125,18 +127,18 @@ export class VendaComponent implements OnInit{
     } else {
     }
   }
-  
+
   adicionarItemManual(): void {
     if (!this.produtoEncontrado || this.quantidadeManual <= 0) {
       this.msg.add({ severity: 'warn', summary: 'Inválido', detail: 'Selecione um produto e quantidade.' });
       return;
     }
-    
+
     this.adicionarItem(this.produtoEncontrado, this.quantidadeManual);
     this.limparFormularioBusca();
     this.focarNoInputBusca();
   }
-  
+
   adicionarItem(produto: ProdutoResponse, quantidade: number): void {
     const itemExistente = this.itensDaVenda.find(
       item => item.produto.id === produto.id
@@ -161,11 +163,11 @@ export class VendaComponent implements OnInit{
     this.recalcularTotal();
   }
 
-  removerItem(itemParaRemover: itemVenda): void { 
+  removerItem(itemParaRemover: itemVenda): void {
     this.itensDaVenda = this.itensDaVenda.filter(item => item !== itemParaRemover);
     this.recalcularTotal();
   }
-  
+
 
   private recalcularTotal(): void {
     this.valorTotal = this.itensDaVenda.reduce((acc, item) => {
@@ -178,18 +180,8 @@ export class VendaComponent implements OnInit{
     if (this.valorRecebido && this.valorRecebido >= this.valorTotal) {
       this.troco = this.valorRecebido - this.valorTotal;
     } else {
-      this.troco = 0; 
+      this.troco = 0;
     }
-  }
-
-  cancelarVenda(): void {
-    this.itensDaVenda = [];
-    this.valorRecebido = null;
-    this.recalcularTotal();
-    this.produtoEncontrado = null;
-    this.codigoOuNome = '';
-    this.limparFormularioBusca();
-    this.focarNoInputBusca();
   }
 
   finalizarVenda(): void {
@@ -199,9 +191,9 @@ export class VendaComponent implements OnInit{
       this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Usuário não autenticado. Faça login novamente.' });
       return;
     }
-    
+
     if (this.itensDaVenda.length === 0 || !this.valorRecebido || this.valorRecebido < this.valorTotal) {
-       this.msg.add({ severity: 'warn', summary: 'Atenção', detail: 'Verifique os itens ou o valor recebido.' });
+      this.msg.add({ severity: 'warn', summary: 'Atenção', detail: 'Verifique os itens ou o valor recebido.' });
       return;
     }
 
@@ -212,7 +204,7 @@ export class VendaComponent implements OnInit{
     }));
 
     const requisicaoVenda: VendaRequest = {
-      valorRecebido: this.valorRecebido, 
+      valorRecebido: this.valorRecebido,
       usuarioId: usuarioLogado.id,
       itens: listaItensDTO
     };
@@ -221,10 +213,28 @@ export class VendaComponent implements OnInit{
     this.vendaService.criar(requisicaoVenda).subscribe({
       next: (vendaSalva) => {
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Venda registrada com sucesso!' });
-        this.cancelarVenda(); 
+        this.cancelarVenda();
       },
       error: (err) => this.errorHandler.tratarErroHttp(err)
     });
 
+  }
+
+  public podeDesativar(): boolean {
+    return this.itensDaVenda.length === 0;
+  }
+
+  public aoDesativar(): void {
+    this.cancelarVenda();
+  }
+
+  cancelarVenda(): void {
+    this.itensDaVenda = [];
+    this.valorRecebido = null;
+    this.recalcularTotal();
+    this.produtoEncontrado = null;
+    this.codigoOuNome = '';
+    this.limparFormularioBusca();
+    this.focarNoInputBusca();
   }
 }

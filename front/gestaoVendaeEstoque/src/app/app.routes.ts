@@ -13,7 +13,6 @@ export const routes: Routes = [
   {
     path: 'relatorio', component: RelatorioComponent,
     canActivate: [authGuard],
-    canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN', 'OPERADOR'] }
   },
   {
@@ -25,13 +24,11 @@ export const routes: Routes = [
   {
     path: 'usuario', component: GestaoUsuarioComponent,
     canActivate: [authGuard],
-    canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN'] }
   },
   {
     path: 'estoque', component: GestaoEstoqueComponent,
     canActivate: [authGuard],
-    canDeactivate: [deactivateGuard],
     data: { roles: ['ADMIN'] }
   },
 ];
