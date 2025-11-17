@@ -1,13 +1,16 @@
 :host {
   display: block;
 }
-  
+
 :host ::ng-deep .relatorio-filtros {
   background: var(--surface-card);
   border-bottom: 1px solid var(--surface-border);
+  border-top: none;
+  border-left: none;
+  border-right: none;
   padding: 1rem 1.5rem;
   border-radius: 10px;
-  margin: 1.5rem;
+  margin: 0 1.5rem 1.5rem 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -39,10 +42,30 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 1.5rem;
+  padding: 1rem 1.5rem;
+}
+
+.charts-container p-card,
+.charts-container .p-card {
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.charts-container .p-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 :host ::ng-deep .p-card .p-card-content {
-  padding-top: 1rem; 
+  padding-top: 1rem;
+}
+
+.charts-container p-chart,
+.charts-container .p-chart {
+  flex: 1;
+  min-height: 250px;
 }
 
 :host ::ng-deep .charts-container .p-dropdown {
@@ -50,12 +73,13 @@
   margin-bottom: 1rem;
 }
 
-:host ::ng-deep .p-datatable-tbody > tr[role="row"][aria-expanded] {
-  cursor: pointer;
+:host ::ng-deep canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .tabela-relatorio {
-  padding: 0 1.5rem 1.5rem 1.5rem; 
+  padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
 :host ::ng-deep .tabela-relatorio .p-table {
@@ -64,8 +88,12 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
+:host ::ng-deep .p-datatable-tbody > tr[role="row"][aria-expanded] {
+  cursor: pointer;
+}
+
 .row-expansion-details {
-  background: var(--surface-ground); 
+  background: var(--surface-ground);
   border-radius: 6px;
 }
 
@@ -96,4 +124,22 @@
   text-align: right;
   color: var(--text-color-secondary);
   font-size: 0.875rem;
+}
+
+:host ::ng-deep .charts-container .p-card,
+:host ::ng-deep .charts-container .p-card-body,
+:host ::ng-deep .charts-container .p-card-content {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+:host ::ng-deep .charts-container p-card {
+  flex: 1 !important;
+  height: 350px;              
+}
+
+:host ::ng-deep .charts-container canvas {
+  flex: 1 !important;         
+  height: 100% !important;
 }
