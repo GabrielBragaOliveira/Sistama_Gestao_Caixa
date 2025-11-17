@@ -17,6 +17,7 @@ import { RelatorioDetalhe, RelatorioResponse } from '../modelos/DTOs/RelatorioDT
 import { UsuarioService } from '../service/UsuarioService';
 import { ProdutoService } from '../service/Produto.Service';
 import { TotalVendaDTO } from '../modelos/DTOs/graficoDTO';
+import { ErrorHandlingService } from '../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-relatorio',
@@ -53,7 +54,8 @@ export class RelatorioComponent implements OnInit {
     private msg: MessageService,
     private service: RelatorioService,
     private serviceU: UsuarioService,
-    private serviceP: ProdutoService
+    private serviceP: ProdutoService,
+    private errorHandler: ErrorHandlingService 
   ) { }
 
   ngOnInit(): void {
@@ -75,9 +77,7 @@ export class RelatorioComponent implements OnInit {
             value: u.id
           }));
         },
-        error: () => {
-          this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os usuários' });
-        }
+        error: (err) => this.errorHandler.tratarErroHttp(err)
       });
 
     this.serviceP.listar()
@@ -89,9 +89,7 @@ export class RelatorioComponent implements OnInit {
             value: p.id
           }));
         },
-        error: () => {
-          this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os usuários' });
-        }
+        error: (err) => this.errorHandler.tratarErroHttp(err)
       });
   }
 
@@ -122,9 +120,7 @@ export class RelatorioComponent implements OnInit {
         this.vendasDetalhas.clear();
         this.atualizarTodosGraficos(this.vendas);
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os relatórios.' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     })
   }
 
@@ -150,13 +146,7 @@ export class RelatorioComponent implements OnInit {
           novoMapa.set(vendaId, detalhe);
           this.vendasDetalhas = novoMapa;
         },
-        error: () => {
-          this.msg.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Falha ao buscar detalhes da venda.'
-          });
-        }
+        error: (err) => this.errorHandler.tratarErroHttp(err)
       });
   }
 
@@ -197,9 +187,7 @@ export class RelatorioComponent implements OnInit {
         };
 
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os relatórios.' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
 
   }
@@ -303,4 +291,11 @@ export class RelatorioComponent implements OnInit {
 
     return `${year}-${month}-${day}`;
   }
+
+  contadorItens(itens: any[] | undefined | null): number {
+  if (!itens) {
+    return 0;
+  }
+  return itens.reduce((total, item) => total + (item.quantidade || 0), 0);
+}
 }

@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgIf, CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
+import { ErrorHandlingService } from '../../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-cadastro-usuario',
@@ -46,13 +47,21 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private service: UsuarioService,
     private msg: MessageService,
-    private confirm: ConfirmationService
+    private confirm: ConfirmationService,
+    private errorHandler: ErrorHandlingService
   ) {
+    const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     this.formUsuario = this.fb.group({
       nome: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
       email: this.fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
       perfil: this.fb.control<Perfils | ''>('', { validators: [Validators.required], nonNullable: true }),
-      senha: this.fb.control('', { validators: [Validators.required], nonNullable: true }),
+      senha: this.fb.control('', {
+        validators: [
+          Validators.required,
+          Validators.pattern(senhaRegex)
+        ],
+        nonNullable: true
+      }),
     });
   }
 
@@ -107,11 +116,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
         });
         this.service.loading.set(false);
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar dados para edição' });
-        this.service.loading.set(false);
-        this.cancelar();
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
   }
 
@@ -142,7 +147,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
             this.cancelar();
           }
         },
-        error: (err) => this.tratarErroHttp(err)
+        error: (err) => this.errorHandler.tratarErroHttp(err)
       });
     }
   }
@@ -150,16 +155,5 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
   cancelar(): void {
     this.limparFormulario();
     this.fechar.emit(false);
-  }
-
-  private tratarErroHttp(err: any) {
-    const status = err?.status;
-    if (status === 409) {
-      this.msg.add({ severity: 'warn', summary: 'Conflito', detail: 'E-mail já cadastrado' });
-    } else if (status === 400) {
-      this.msg.add({ severity: 'warn', summary: 'Regras', detail: err?.error?.message || 'Violação de regra de negócio' });
-    } else {
-      this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao salvar' });
-    }
   }
 }

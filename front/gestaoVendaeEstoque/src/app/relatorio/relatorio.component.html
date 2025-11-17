@@ -44,10 +44,9 @@
   </p-card>
 
   <p-card header="Movimentação por Produto">
-    <p-dropdown [options]="produtosFiltro" 
-              [(ngModel)]="filtroProdutoChart" 
-              (onChange)="atualizarChartProduto($event.value)"placeholder="Selecione um produto">
-  </p-dropdown>
+    <p-dropdown [options]="produtosFiltro" [(ngModel)]="filtroProdutoChart"
+      (onChange)="atualizarChartProduto($event.value)" placeholder="Selecione um produto">
+    </p-dropdown>
 
     <p-chart type="line" [data]="chartEntradaSaida" [options]="chartOptions"></p-chart>
   </p-card>
@@ -129,6 +128,9 @@
     </ng-template>
 
   </p-table>
+  <div class="summary">
+      Total de Itens: {{ contadorItens(detalhe?.venda?.itens) }}
+    </div>
 </div>
 </td>
 </tr>
