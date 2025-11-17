@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -34,7 +34,8 @@ export class AjusteEstoqueComponent implements OnChanges {
   constructor(
     private auth: AuthService,
     private estoqueService: EstoqueService,
-    private msg: MessageService
+    private msg: MessageService,
+    private confirm: ConfirmationService
   ) { }
 
   ngOnChanges(): void {
@@ -75,8 +76,28 @@ export class AjusteEstoqueComponent implements OnChanges {
     });
   }
 
-  cancelar(): void {
-    this.fechar.emit();
+  private temAlteracoes(): boolean {
+    const descricaoLimpa = this.descricaoAjuste.trim();
+    if (this.tipoMovimentacao === 'ENTRADA' && this.quantidadeAjuste !== 1) return true;
+    if (descricaoLimpa !== '') return true;
+    return false;
   }
-  
+
+  cancelar(): void {
+    if (this.temAlteracoes()) {
+      this.confirm.confirm({
+        message: 'Você tem alterações não salvas. Deseja realmente fechar?',
+        header: 'Confirmação',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim, fechar',
+        rejectLabel: 'Não, ficar',
+        accept: () => {
+          this.fechar.emit();
+        }
+      });
+    } else {
+      this.fechar.emit();
+    }
+  }
 }
+

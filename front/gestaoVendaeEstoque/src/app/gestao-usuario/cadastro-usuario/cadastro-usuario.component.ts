@@ -153,7 +153,25 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
   }
 
   cancelar(): void {
-    this.limparFormulario();
-    this.fechar.emit(false);
+    if (this.formUsuario.dirty) {
+
+      this.confirm.confirm({
+        message: 'Você tem alterações não salvas. Deseja realmente fechar?',
+        header: 'Confirmação',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim, fechar',
+        rejectLabel: 'Não, ficar',
+        accept: () => {
+          this.limparFormulario();
+          this.fechar.emit(false);
+        },
+        reject: () => {
+        }
+      });
+
+    } else {
+      this.limparFormulario();
+      this.fechar.emit(false);
+    }
   }
 }

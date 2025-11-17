@@ -140,7 +140,23 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
   }
 
   cancelar(): void {
-    this.fechar.emit();
+
+    if (this.formProduto.dirty) {
+
+      this.confirm.confirm({
+        message: 'Você tem alterações não salvas. Deseja realmente fechar?',
+        header: 'Confirmação',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim, fechar',
+        rejectLabel: 'Não, ficar',
+        accept: () => {
+          this.fechar.emit();
+        }
+      });
+
+    } else {
+      this.fechar.emit();
+    }
   }
 
 }
