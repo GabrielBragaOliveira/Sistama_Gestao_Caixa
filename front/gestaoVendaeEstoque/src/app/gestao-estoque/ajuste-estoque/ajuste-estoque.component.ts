@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -22,7 +22,7 @@ import { AuthService } from '../../service/auth.service';
   templateUrl: './ajuste-estoque.component.html',
   styleUrls: ['./ajuste-estoque.component.css']
 })
-export class AjusteEstoqueComponent implements OnInit {
+export class AjusteEstoqueComponent implements OnChanges {
 
   @Input() produto: ProdutoResponse | null = null;
   @Output() fechar = new EventEmitter();
@@ -37,7 +37,7 @@ export class AjusteEstoqueComponent implements OnInit {
     private msg: MessageService
   ) { }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.resetarForm();
   }
 
@@ -63,16 +63,16 @@ export class AjusteEstoqueComponent implements OnInit {
 
     this.estoqueService.loading.set(true);
 
-    
-     this.estoqueService.ajustarEstoque(request).pipe(
-       finalize(() => this.estoqueService.loading.set(false))
-     ).subscribe({
-       next: () => {
-         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado.' });
-         this.fechar.emit(true); 
-       },
-       error: (err) => this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao ajustar estoque.' })
-     });
+
+    this.estoqueService.ajustarEstoque(request).pipe(
+      finalize(() => this.estoqueService.loading.set(false))
+    ).subscribe({
+      next: () => {
+        this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado.' });
+        this.fechar.emit(true);
+      },
+      error: (err) => this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao ajustar estoque.' })
+    });
   }
 
   cancelar(): void {

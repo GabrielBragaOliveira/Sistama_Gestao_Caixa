@@ -22,7 +22,6 @@ import { finalize } from 'rxjs';
     SelectButtonModule,
     InputTextModule,
     ButtonModule,
-    ToastModule,
     InputNumberModule,
   ],
   templateUrl: './cadastro-estoque.component.html',
@@ -69,8 +68,17 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
     this.configurarFormulario();
   }
 
+  private limparFormulario(): void {
+    this.formProduto.reset({
+      codigo: 0,
+      nome: '',
+      categoria: '',
+      preco: 0
+    });
+  }
+  
   private configurarFormulario(): void {
-    this.formProduto.reset();
+    this.limparFormulario();
     if (this.isEdicao && this.id) {
       this.carregarProdutoParaEdicao();
     }

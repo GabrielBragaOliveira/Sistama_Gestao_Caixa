@@ -21,7 +21,6 @@ import { finalize } from 'rxjs';
     SelectButtonModule,
     InputTextModule,
     ButtonModule,
-    ToastModule,
   ],
   templateUrl: './cadastro-usuario.component.html',
   styleUrl: './cadastro-usuario.component.css'
@@ -71,8 +70,19 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
     }
   }
 
+  public limparFormulario(): void {
+    this.formUsuario.reset({
+      nome: '',
+      email: '',
+      perfil: '',
+      senha: ''
+    });
+    this.formUsuario.get('senha')?.setValidators([Validators.required]);
+    this.formUsuario.get('senha')?.updateValueAndValidity();
+  }
+
   private configurarFormulario(): void {
-    this.formUsuario.reset();
+    this.limparFormulario();
 
     this.formUsuario.get('senha')?.setValidators([Validators.required]);
     this.formUsuario.get('senha')?.updateValueAndValidity();
@@ -138,6 +148,7 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
   }
 
   cancelar(): void {
+    this.limparFormulario();
     this.fechar.emit(false);
   }
 
