@@ -11,6 +11,7 @@ import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.UsuarioEnum;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ConflitoException;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ErroValidacaoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.NaoAutorizadoException;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RequisicaoInvalidaException;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.UsuarioMapper;
@@ -20,9 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -36,9 +35,6 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioMapper usuarioMapper;
-
-    //@Autowired
-    //private LoginMapper LoginMapper;
 
     public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
 
@@ -96,12 +92,12 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto, String emailUsuarioLogado) {
+    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
-        if (usuarioExistente.getEmail().equalsIgnoreCase(emailUsuarioLogado)) {
-            throw new RequisicaoInvalidaException("Você não pode editar seu próprio usuário.");
+        if (!usuarioExistente.getEmail().equals(dto.email())) {
+            throw new RequisicaoInvalidaException("O email do usuário não pode ser alterado.");
         }
 
         if (!usuarioExistente.isAtivo()) {
@@ -154,45 +150,16 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDTO login(LoginRequestDTO dto) {
         Usuario usuario = usuarioRepository.findByEmail(dto.email())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha incorretos."));
+                .orElseThrow(() -> new NaoAutorizadoException("Email ou senha incorretos."));
 
         if (!usuario.isAtivo()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inativo.");
+            throw new NaoAutorizadoException("Usuário inativo.");
         }
 
         if (!usuario.getSenha().equals(dto.senha())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha incorretos.");
+            throw new NaoAutorizadoException("Email ou senha incorretos.");
         }
 
         return usuarioMapper.toResponseDTO(usuario);
     }
-
-    /*
-    public List<UsuarioResponseDTO> listarTodos(String filtro, Boolean ativo, UsuarioEnum perfil) {
-    Specification<Usuario> spec = Specification.where(null);
-
-    if (ativo != null) {
-        spec = spec.and((root, query, cb) -> cb.equal(root.get("ativo"), ativo));
-    }
-
-    if (perfil != null) {
-        spec = spec.and((root, query, cb) -> cb.equal(root.get("perfil"), perfil));
-    }
-
-    if (filtro != null && !filtro.isBlank()) {
-        String likeFiltro = "%" + filtro.toLowerCase() + "%";
-        spec = spec.and((root, query, cb) ->
-            cb.or(
-                cb.like(cb.lower(root.get("nome")), likeFiltro),
-                cb.like(cb.lower(root.get("email")), likeFiltro)
-            )
-        );
-    }
-
-    List<Usuario> usuarios = usuarioRepository.findAll(spec, Sort.by("nome").ascending());
-
-    return usuarios.stream()
-        .map(UsuarioMapper::toResponseDTO)
-        .collect(Collectors.toList());
-}*/
 }

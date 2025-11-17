@@ -12,19 +12,17 @@ import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ErroValidacaoException;
 import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RequisicaoInvalidaException;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.MovimentoMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.MovimentacaoEstoqueRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -61,7 +59,7 @@ public class MovimentacaoEstoqueService {
                 produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + quantidade);
                 break;
             case SAIDA:
-                if (tipo == MovimentoEnum.SAIDA && produto.getQuantidadeEstoque() < quantidade) {
+                if (produto.getQuantidadeEstoque() < quantidade) {
                     throw new ErroValidacaoException("Estoque insuficiente para saída.");
                 }
                 produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
@@ -69,6 +67,8 @@ public class MovimentacaoEstoqueService {
             case AJUSTE:
                 produto.setQuantidadeEstoque(quantidade);
                 break;
+            default:
+                throw new RequisicaoInvalidaException("Tipo de movimentação inválido.");
         }
 
         produtoRepository.save(produto);
@@ -88,7 +88,7 @@ public class MovimentacaoEstoqueService {
 
     public MovimentoEstoqueResponseDTO buscarPorId(Long id) {
         MovimentacaoEstoque movimentacao = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movimentação não encontrada."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Movimentação não encontrada."));
         return MovimentoMapper.toResponseDTO(movimentacao);
     }
 

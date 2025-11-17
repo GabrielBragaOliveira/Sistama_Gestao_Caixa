@@ -11,14 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Aluno
  */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class RegraDeNegocioException extends RuntimeException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class NaoAutorizadoException extends RuntimeException {
 
-    public RegraDeNegocioException(String message) {
+    public NaoAutorizadoException(String message) {
         super(message);
-    }
-
-    public RegraDeNegocioException(String message, Throwable cause) {
-        super(message, cause);
     }
 }
