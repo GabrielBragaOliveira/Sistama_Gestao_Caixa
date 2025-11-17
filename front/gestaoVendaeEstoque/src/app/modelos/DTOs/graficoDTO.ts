@@ -4,3 +4,10 @@ export interface TotalVendaDTO {
   quantidadeVendas: number;
   totalVendido: number;
 }
+
+export interface totalProdutoDTO{
+  id: number;
+  tipo: string;
+  quantidade: number;
+  data: string;
+}

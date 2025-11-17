@@ -3,7 +3,7 @@ import { Injectable, signal } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { RelatorioDetalhe, RelatorioResponse } from "../modelos/DTOs/RelatorioDTO";
-import { TotalVendaDTO } from "../modelos/DTOs/graficoDTO";
+import { totalProdutoDTO, TotalVendaDTO } from "../modelos/DTOs/graficoDTO";
 
 @Injectable({ providedIn: "root" })
 
@@ -46,9 +46,7 @@ export class RelatorioService {
         return this.http.get<TotalVendaDTO[]>(`${this.baseUrl}/vendas/por-mes`);
     }
 
-    // 5. VOCÊ AINDA PRECISA DE UM MÉTODO PARA OS GRÁFICOS
-    // getDadosDashboard(params?: any): Observable<RelatorioDashboardDTO> {
-    //   return this.http.get<RelatorioDashboardDTO>(`${this.baseUrl}/dashboard`, { params });
-    // }
-
+    graficoProduto(id: number): Observable<totalProdutoDTO[]> {
+        return this.http.get<totalProdutoDTO[]>(`${this.baseUrl}/movimentacoes/produto/${id}`);
+    }
 }

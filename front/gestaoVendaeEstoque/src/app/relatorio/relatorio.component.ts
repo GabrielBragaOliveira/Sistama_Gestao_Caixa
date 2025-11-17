@@ -63,6 +63,7 @@ export class RelatorioComponent implements OnInit {
   }
 
   carregarFiltros(): void {
+    this.service.loading.set(true);
     const params: any = {};
     params.perfil = "OPERADOR";
     this.serviceU.listar(params)
@@ -145,8 +146,9 @@ export class RelatorioComponent implements OnInit {
       .pipe(finalize(() => this.service.loading.set(false)))
       .subscribe({
         next: (detalhe: RelatorioDetalhe) => {
-          this.vendasDetalhas.clear
-          this.vendasDetalhas.set(vendaId, detalhe);
+          const novoMapa = new Map(this.vendasDetalhas);
+          novoMapa.set(vendaId, detalhe);
+          this.vendasDetalhas = novoMapa;
         },
         error: () => {
           this.msg.add({
@@ -156,13 +158,12 @@ export class RelatorioComponent implements OnInit {
           });
         }
       });
-  } 
+  }
 
   private atualizarTodosGraficos(vendas: any[]): void {
     this.configurarOpcoesChart();
     this.atualizarChartTotalVendas();
     this.atualizarChartVendasOperador(vendas);
-    this.atualizarChartProduto();
   }
 
   private atualizarChartTotalVendas(): void {
@@ -195,8 +196,6 @@ export class RelatorioComponent implements OnInit {
           ]
         };
 
-        this.atualizarTodosGraficos(this.vendas);
-
       },
       error: () => {
         this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os relatórios.' });
@@ -205,27 +204,49 @@ export class RelatorioComponent implements OnInit {
 
   }
 
-  atualizarChartProduto(): void {
+  atualizarChartProduto(id: number): void {
+    console.log('ID recebido pela função:', id);
+    const mesesDoAno = [
+      'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+    ];
 
-    this.chartEntradaSaida = {
-      labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
-      datasets: [
-        {
-          label: 'Entradas',
-          data: [10, 15, 0, 5, 20],
-          fill: false,
-          borderColor: this.corLinhaEntrada,
-          tension: 0.4
-        },
-        {
-          label: 'Saídas (Vendas)',
-          data: [5, 8, 3, 7, 10],
-          fill: false,
-          borderColor: this.corLinhaSaida,
-          tension: 0.4
+    this.service.graficoProduto(id).subscribe(dadosDoProduto => {
+
+      const entradasPorMes = new Array(12).fill(0);
+      const saidasPorMes = new Array(12).fill(0);
+
+      for (const item of dadosDoProduto) {
+        const dataItem = new Date(item.data);
+        const mesIndex = dataItem.getMonth();
+
+        if (item.tipo === 'ENTRADA') {
+          entradasPorMes[mesIndex] += item.quantidade;
+        } else if (item.tipo === 'SAIDA') { 
+          saidasPorMes[mesIndex] += item.quantidade;
         }
-      ]
-    };
+      }
+
+      this.chartEntradaSaida = {
+        labels: mesesDoAno,
+        datasets: [
+          {
+            label: 'Entradas',
+            data: entradasPorMes,
+            fill: false,
+            borderColor: this.corLinhaEntrada,
+            tension: 0.4
+          },
+          {
+            label: 'Saídas (Vendas)',
+            data: saidasPorMes, 
+            fill: false,
+            borderColor: this.corLinhaSaida,
+            tension: 0.4
+          }
+        ]
+      };
+    });
   }
 
   private atualizarChartVendasOperador(vendas: RelatorioResponse[]): void {
