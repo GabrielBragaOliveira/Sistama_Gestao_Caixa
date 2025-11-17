@@ -3,6 +3,7 @@
     transform: translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -23,37 +24,38 @@
 }
 
 :host ::ng-deep .perfil-select .p-button:not(.p-highlight) {
-  background: #f0f0f0;
-  border-color: #d0d0d0;
-  color: #555;
+  background: var(--surface-ground);
+  border-color: var(--surface-border);
+  color: var(--text-color-secondary);
 }
 
 :host ::ng-deep .perfil-select .p-button:not(.p-highlight):hover {
-  background: #e0e0e0;
-  border-color: #c0c0c0;
+  background: var(--surface-hover);
+  border-color: var(--surface-border);
 }
 
 :host ::ng-deep .perfil-select .p-button.p-highlight {
-  background: #2ab3a3; 
-  border-color: #2ab3a3;
-  color: #ffffff;
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color-text);
 }
 
 .card {
-  background: #ffffff;
+  background: var(--surface-card);
+  border-top: 4px solid var(--primary-color);
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 1.5rem 2rem;
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
   border-top: 4px solid #2ab3a3;
 }
 
 .card h2 {
   text-align: center;
-  color: #333;
+  color: var(--text-color);
   margin-top: 0;
   margin-bottom: 1.5rem;
-  font-weight: 600; 
+  font-weight: 600;
   font-size: 1.5rem;
 }
 
@@ -68,7 +70,7 @@
 }
 
 .error-message {
-  color: #D32F2F; 
+  color: var(--red-500);
   font-size: 0.875rem;
   padding-left: 0.25rem;
   margin-top: 0.25rem;
@@ -79,15 +81,6 @@
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
-}
-
-.botoes-acao .p-button-secondary {
-  background: #6c757d !important;
-  border: none !important;
-}
-
-.botoes-acao .p-button-secondary:hover {
-  background: #5a6268 !important;
 }
 
 @media (max-width: 768px) {

@@ -4,17 +4,20 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.controller;
 
-import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioVendasDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.FiltroRelatorioVendaDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioDetalheVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioMovimentoEstoqueResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.service.RelatorioService;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,15 +32,29 @@ public class RelatorioController {
     @Autowired
     private RelatorioService relatorioService;
 
-    @GetMapping("/vendas")
-    public ResponseEntity<RelatorioVendasDTO> getRelatorio(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal,
-            @RequestParam(required = false) BigDecimal valorMin,
-            @RequestParam(required = false) BigDecimal valorMax,
-            @RequestParam(required = false) Long usuarioId) {
-
-        RelatorioVendasDTO relatorio = relatorioService.gerarRelatorio(dataInicial, dataFinal, valorMin, valorMax, usuarioId);
-        return ResponseEntity.ok(relatorio);
+    @GetMapping("/resumo")
+    public List<RelatorioResumoVendaResponse> gerarResumo(FiltroRelatorioVendaDTO filtro) {
+        return relatorioService.gerarResumo(filtro);
     }
+
+    @GetMapping("/venda/{id}")
+    public ResponseEntity<RelatorioDetalheVendaResponse> detalhes(@PathVariable Long id) {
+        return ResponseEntity.ok(relatorioService.detalhes(id));
+    }
+
+    @GetMapping("/vendas/por-operador")
+    public List<VendasPorOperadorResponseDTO> vendasPorOperador() {
+        return relatorioService.vendasPorOperador();
+    }
+
+    @GetMapping("/vendas/por-mes")
+    public List<VendasPorMesResponseDTO> vendasPorMes() {
+        return relatorioService.vendasPorMes();
+    }
+
+    @GetMapping("/movimentacoes/produto/{produtoId}")
+    public List<RelatorioMovimentoEstoqueResponseDTO> listarMovimentacoesPorProduto(@PathVariable Long produtoId) {
+        return relatorioService.listarMovimentacoesPorProduto(produtoId);
+    }
+
 }

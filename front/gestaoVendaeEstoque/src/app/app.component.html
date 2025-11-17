@@ -1,13 +1,12 @@
 <div class="top-loading-bar" *ngIf="service.loading()"></div>
-<div class="app-layout">
-  <app-side-bar
-    *ngIf="isLayoutVisible()"
-    [role]="userRole"
-    [username]="userName"
-    (logout)="onLogout()"
-  ></app-side-bar>
 
-  <div class="app-content" [class.fullscreen]="!isLayoutVisible()">
+<div class="app-layout">
+
+  <app-side-bar *ngIf="isLayoutVisible()" [role]="userRole" [username]="userName" (logout)="onLogout()"
+    (stateChanged)="onSidebarStateChanged($event)"></app-side-bar>
+
+  <div class="app-content" [class.fullscreen]="!isLayoutVisible()"
+    [class.sidebar-fechada]="!isSidebarAberta && isLayoutVisible()">
     <router-outlet></router-outlet>
   </div>
 </div>

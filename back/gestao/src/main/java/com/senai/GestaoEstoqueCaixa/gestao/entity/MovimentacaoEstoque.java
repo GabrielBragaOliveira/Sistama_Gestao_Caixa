@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -44,7 +45,7 @@ public class MovimentacaoEstoque {
     private String motivo;
 
     @Column(nullable = false)
-    private LocalDateTime data = LocalDateTime.now();
+    private LocalDate data = LocalDate.now();
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
@@ -90,11 +91,11 @@ public class MovimentacaoEstoque {
         this.motivo = motivo;
     }
 
-    public LocalDateTime getData() {
+    public LocalDate getData() {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(LocalDate data) {
         this.data = data;
     }
 

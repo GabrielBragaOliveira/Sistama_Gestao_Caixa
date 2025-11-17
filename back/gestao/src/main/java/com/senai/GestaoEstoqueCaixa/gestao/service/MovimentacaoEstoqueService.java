@@ -10,14 +10,18 @@ import com.senai.GestaoEstoqueCaixa.gestao.entity.MovimentacaoEstoque;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Produto;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Usuario;
 import com.senai.GestaoEstoqueCaixa.gestao.enums.MovimentoEnum;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.ErroValidacaoException;
+import com.senai.GestaoEstoqueCaixa.gestao.exceptions.RecursoNaoEncontradoException;
 import com.senai.GestaoEstoqueCaixa.gestao.mapper.MovimentoMapper;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.MovimentacaoEstoqueRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.ProdutoRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,30 +33,25 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class MovimentacaoEstoqueService {
 
-    private final MovimentacaoEstoqueRepository repository;
-    private final ProdutoRepository produtoRepository;
-    private final UsuarioRepository usuarioRepository;
-
-    public MovimentacaoEstoqueService(MovimentacaoEstoqueRepository repository,
-            ProdutoRepository produtoRepository,
-            UsuarioRepository usuarioRepository) {
-        this.repository = repository;
-        this.produtoRepository = produtoRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
+    @Autowired
+    private MovimentacaoEstoqueRepository repository;
+    @Autowired
+    private ProdutoRepository produtoRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Transactional
-    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto, String emailUsuario) {
+    public MovimentoEstoqueResponseDTO criarMovimentacao(MovimentoEstoqueRequestDTO dto) {
 
         Produto produto = produtoRepository.findById(dto.produtoId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
 
         if (produto.getQuantidadeEstoque() == null) {
             produto.setQuantidadeEstoque(0);
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+        Usuario usuario = usuarioRepository.findById(dto.usuarioId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         MovimentoEnum tipo = MovimentoEnum.valueOf(dto.tipo().trim().toUpperCase());
         Integer quantidade = dto.quantidade();
@@ -62,8 +61,8 @@ public class MovimentacaoEstoqueService {
                 produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() + quantidade);
                 break;
             case SAIDA:
-                if (produto.getQuantidadeEstoque() < quantidade) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estoque insuficiente para saída.");
+                if (tipo == MovimentoEnum.SAIDA && produto.getQuantidadeEstoque() < quantidade) {
+                    throw new ErroValidacaoException("Estoque insuficiente para saída.");
                 }
                 produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
                 break;
@@ -124,7 +123,7 @@ public class MovimentacaoEstoqueService {
         mov.setTipo(MovimentoEnum.SAIDA);
         mov.setQuantidade(quantidade);
         mov.setMotivo(motivo);
-        mov.setData(LocalDateTime.now());
+        mov.setData(LocalDate.now());
         repository.save(mov);
     }
 }

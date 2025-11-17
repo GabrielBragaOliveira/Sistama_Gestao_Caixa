@@ -1,18 +1,16 @@
-export interface ProdutoRequest{
-  codigo: string;
+export interface ProdutoRequest {
+  codigo: number;
   nome: string;
   categoria: string;
-  quantidadeEstoque: number;
   preco: number;
 }
 
-export interface ProdutoResponse{
+export interface ProdutoResponse {
   id: number;
-  codigo: string;
+  codigo: number;
   nome: string;
   categoria: string;
   quantidadeEstoque: number;
   preco: number;
   ativo: boolean;
 }
-

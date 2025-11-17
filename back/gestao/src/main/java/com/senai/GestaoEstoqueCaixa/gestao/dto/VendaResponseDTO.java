@@ -5,6 +5,7 @@
 package com.senai.GestaoEstoqueCaixa.gestao.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public record VendaResponseDTO(
         BigDecimal valorTotal,
         BigDecimal valorRecebido,
         BigDecimal troco,
-        LocalDateTime dataVenda,
+        LocalDate dataVenda,
         Long usuarioId,
         String nomeUsuario,
         List<ItemVendaResponseDTO> itens

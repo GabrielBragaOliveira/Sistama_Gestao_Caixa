@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+  
+:host ::ng-deep .relatorio-filtros {
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.p-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.p-field label {
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.actions-container {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+:host ::ng-deep .p-card .p-card-content {
+  padding-top: 1rem; 
+}
+
+:host ::ng-deep .charts-container .p-dropdown {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+:host ::ng-deep .p-datatable-tbody > tr[role="row"][aria-expanded] {
+  cursor: pointer;
+}
+
+.tabela-relatorio {
+  padding: 0 1.5rem 1.5rem 1.5rem; 
+}
+
+:host ::ng-deep .tabela-relatorio .p-table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.row-expansion-details {
+  background: var(--surface-ground); 
+  border-radius: 6px;
+}
+
+.row-expansion-details h5 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.detalhes-financeiros {
+  display: flex;
+  gap: 2rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.detalhes-financeiros strong {
+  color: var(--text-color-secondary);
+}
+
+:host ::ng-deep .row-expansion-details .p-table {
+  border: 1px solid var(--surface-border);
+}

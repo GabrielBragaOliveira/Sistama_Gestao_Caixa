@@ -4,17 +4,17 @@ import { environment } from "../../environments/environment";
 import { BehaviorSubject, Observable } from "rxjs";
 import { UsuarioResponse, UsuarioRequest, UsuarioLogin } from "../modelos/DTOs/UsuarioDTOs";
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: "root" })
 
 export class UsuarioService {
 
-    private readonly baseUrl = `${environment.apiUrl}/usuarios`;
+  private readonly baseUrl = `${environment.apiUrl}/usuarios`;
 
-    loading = signal(false);
-    private _cache$ = new BehaviorSubject<UsuarioResponse[] | null>(null);
-    cache$ = this._cache$.asObservable();
+  loading = signal(false);
+  private _cache$ = new BehaviorSubject<UsuarioResponse[] | null>(null);
+  cache$ = this._cache$.asObservable();
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   listar(params?: { filtro?: string; perfil?: string; ativo?: boolean }): Observable<UsuarioResponse[]> {
     let httpParams = new HttpParams();
@@ -23,7 +23,6 @@ export class UsuarioService {
     if (params?.ativo !== undefined && params?.ativo !== null) {
       httpParams = httpParams.set('ativo', params.ativo);
     }
-    console.log(params)
     return this.http.get<UsuarioResponse[]>(this.baseUrl, { params: httpParams });
   }
 

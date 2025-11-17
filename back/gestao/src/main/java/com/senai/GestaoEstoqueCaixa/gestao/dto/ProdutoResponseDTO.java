@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public record ProdutoResponseDTO(
     Long id,
     String nome,
-    String codigo,
+    Integer codigo,
     String categoria,
     Integer quantidadeEstoque,
     BigDecimal preco,

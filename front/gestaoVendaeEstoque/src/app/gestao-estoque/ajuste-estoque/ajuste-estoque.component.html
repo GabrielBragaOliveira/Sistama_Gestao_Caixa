@@ -1,0 +1,47 @@
+<div class="card">
+    <h2>Movimentar Estoque: {{ produto?.nome }}</h2>
+
+    <form (ngSubmit)="salvar()">
+        <div class="p-fluid">
+
+            <div class="p-field">
+                <label>Tipo de Movimentação</label>
+                <div class="tipo-movimentacao">
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="tipo" value="ENTRADA" [(ngModel)]="tipoMovimentacao"
+                            inputId="tipoEntrada"></p-radioButton>
+                        <label for="tipoEntrada">Entrada (Positiva)</label>
+                    </div>
+                    <div class="p-field-radiobutton">
+                        <p-radioButton name="tipo" value="AJUSTE" [(ngModel)]="tipoMovimentacao"
+                            inputId="tipoAjuste"></p-radioButton>
+                        <label for="tipoAjuste">Ajuste (Pode ser negativo)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-field">
+                <label for="quantidade">Quantidade</label>
+                <p-inputNumber inputId="quantidade" [(ngModel)]="quantidadeAjuste" name="quantidadeAjuste"
+                    [mode]="tipoMovimentacao === 'ENTRADA' ? 'decimal' : 'decimal'"
+                    [min]="tipoMovimentacao === 'ENTRADA' ? 1 : undefined" [showButtons]="true">
+                </p-inputNumber>
+                <small *ngIf="tipoMovimentacao === 'AJUSTE'">Use valores negativos para saídas (ex: -5).</small>
+            </div>
+
+            <div class="p-field">
+                <label for="descricao">Descrição/Motivo</label>
+                <textarea pInputTextarea inputId="descricao" [(ngModel)]="descricaoAjuste" name="descricaoAjuste"
+                    rows="3" placeholder="Ex: Nota Fiscal 1234 ou Correção de contagem">
+        </textarea>
+            </div>
+
+            <div class="botoes-acao">
+                <button pButton type="button" label="Cancelar" class="p-button-secondary" icon="pi pi-times"
+                    (click)="cancelar()"></button>
+                <button pButton type="submit" label="Salvar" class="p-button-success" icon="pi pi-check"
+                    [disabled]="!quantidadeAjuste || !descricaoAjuste"></button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class RecursoNaoEncontradoException extends RuntimeException {
 
+    //Erro 404
     public RecursoNaoEncontradoException(String message) {
         super(message);
     }

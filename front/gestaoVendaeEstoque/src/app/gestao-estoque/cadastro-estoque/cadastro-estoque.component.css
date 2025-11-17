@@ -1,12 +1,6 @@
 @keyframes slideInDown {
-  from {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 :host {
@@ -15,49 +9,25 @@
   animation: slideInDown 0.3s ease-out;
 }
 
-:host ::ng-deep .perfil-select .p-buttonset {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-:host ::ng-deep .perfil-select .p-button:not(.p-highlight) {
-  background: #f0f0f0;
-  border-color: #d0d0d0;
-  color: #555;
-}
-
-:host ::ng-deep .perfil-select .p-button:not(.p-highlight):hover {
-  background: #e0e0e0;
-  border-color: #c0c0c0;
-}
-
-:host ::ng-deep .perfil-select .p-button.p-highlight {
-  background: #2ab3a3; 
-  border-color: #2ab3a3;
-  color: #ffffff;
-}
-
-.card{
-  background: #ffffff;
+.cardProduto {
+  background: var(--surface-card);
+  border-top: 4px solid var(--primary-color);
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 1.5rem 2rem;
   margin-bottom: 1.5rem; 
-  border-top: 4px solid #2ab3a3;
 }
 
-.cardh2 {
+.cardProduto h2 {
   text-align: center;
-  color: #333;
+  color: var(--text-color);
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-weight: 600; 
   font-size: 1.5rem;
 }
 
-.cardform .p-fluid {
+.cardProduto form .p-fluid {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -68,7 +38,7 @@
 }
 
 .error-message {
-  color: #D32F2F; 
+  color: var(--red-500); 
   font-size: 0.875rem;
   padding-left: 0.25rem;
   margin-top: 0.25rem;
@@ -79,25 +49,4 @@
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
-}
-
-.botoes-acao .p-button-secondary {
-  background: #6c757d !important;
-  border: none !important;
-}
-
-.botoes-acao .p-button-secondary:hover {
-  background: #5a6268 !important;
-}
-
-@media (max-width: 768px) {
-  .card {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .card h2 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-  }
 }

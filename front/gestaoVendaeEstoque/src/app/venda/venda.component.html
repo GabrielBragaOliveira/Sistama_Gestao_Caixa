@@ -1,1 +1,125 @@
-<p>venda works!</p>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="venda-container">
+
+  <div class="col-esquerda">
+
+    <div class="painel-busca-container">
+
+      <div class="busca-inputs">
+        <div class="campo-busca">
+          <label for="busca">Buscar Produto (Código ou Nome)</label>
+          <p-autoComplete inputId="busca" #campoBuscaAC [(ngModel)]="codigoOuNome" [suggestions]="sugestoesProdutos"
+            (completeMethod)="buscarProdutos($event)" (onSelect)="onProdutoSelect($event)"
+            (onKeyUp.enter)="onEnterBusca()" field="nome" placeholder="Leia o código ou digite o nome..."
+            [style]="{'width':'100%'}" [forceSelection]="false" dropdownMode="current" styleClass="p-inputtext-lg">
+            <ng-template let-prod pTemplate="item">
+              <div>{{ prod.nome }} (Cód: {{ prod.codigo }})</div>
+            </ng-template>
+          </p-autoComplete>
+        </div>
+
+        <div class="campo-qtd">
+          <label for="quantidade">Qtd.</label>
+          <p-inputNumber inputId="quantidade" #campoQtd [(ngModel)]="quantidadeManual"
+            (onKeyDown.enter)="adicionarItemManual()" [min]="1" mode="decimal" [showButtons]="false"
+            styleClass="p-inputtext-lg">
+          </p-inputNumber>
+        </div>
+
+        <div class="campo-botao">
+          <button pButton label="Adicionar" icon="pi pi-plus" (click)="adicionarItemManual()"
+            [disabled]="!produtoEncontrado" class="p-button-lg">
+          </button>
+        </div>
+      </div>
+
+      <div class="display-produto" *ngIf="produtoEncontrado; else displayVazio">
+        <span class="display-nome">{{ produtoEncontrado.nome }}</span>
+        <span class="display-categoria">{{ produtoEncontrado.categoria }}</span>
+        <span class="display-codigo">Cód: {{ produtoEncontrado.codigo }}</span>
+        <span class="display-preco">R$ {{ produtoEncontrado.preco | number:'1.2-2' }}</span>
+      </div>
+      <ng-template #displayVazio>
+        <div class="display-produto-vazio">
+          <i class="pi pi-barcode" style="font-size: 2rem"></i>
+          <span>Aguardando leitura do produto...</span>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="painel-itens">
+      <p-table [value]="itensDaVenda" responsiveLayout="scroll" [scrollable]="true" scrollHeight="flex">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Produto</th>
+            <th style="width: 8rem">Qtd.</th>
+            <th style="width: 10rem">Preço Unit.</th>
+            <th style="width: 10rem">Subtotal</th>
+            <th style="width: 5rem"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>
+              <span class="item-nome">{{ item.produto.nome }}</span>
+              <span class="item-codigo">Cód: {{ item.produto.codigo }}</span>
+            </td>
+            <td>{{ item.quantidade }}</td>
+            <td>{{ item.produto.preco | currency:'BRL' }}</td>
+            <td>{{ (item.produto.preco * item.quantidade) | currency:'BRL' }}</td>
+            <td>
+              <button pButton pRipple type="button" icon="pi pi-trash"
+                class="p-button-rounded p-button-danger p-button-text" (click)="removerItem(item)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">Nenhum item na venda.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <div class="col-direita">
+    <p-card header="Pagamento" styleClass="card-pagamento">
+      <div class="p-fluid">
+
+        <div class="resumo-total">
+          <h3 class="total-label">Total da Venda:</h3>
+          <span class="total-valor">{{ valorTotal | currency:'BRL' }}</span>
+        </div>
+
+        <div class="p-field">
+          <label for="valorRecebido">Valor Recebido</label>
+          <p-inputNumber inputId="valorRecebido" [(ngModel)]="valorRecebido" mode="currency" currency="BRL"
+            locale="pt-BR" (onInput)="calcularTroco()" [style]="{'width':'100%'}" class="p-inputtext-lg">
+          </p-inputNumber>
+        </div>
+
+        <div class="resumo-troco">
+          <h3 class="total-label">Troco:</h3>
+          <span class="total-valor troco" [class.troco-negativo]="!valorRecebido || valorRecebido < valorTotal">
+            {{ ((valorRecebido && valorRecebido >= valorTotal) ? troco : 0) | currency:'BRL' }}
+          </span>
+        </div>
+
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="botoes-pagamento">
+          <button pButton pRipple label="Finalizar Venda" icon="pi pi-check" class="p-button-success p-button-lg"
+            (click)="finalizarVenda()"
+            [disabled]="itensDaVenda.length === 0 || !valorRecebido || valorRecebido < valorTotal">
+          </button>
+          <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-secondary p-button-outlined p-mt-2" (click)="cancelarVenda()"></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+</div>

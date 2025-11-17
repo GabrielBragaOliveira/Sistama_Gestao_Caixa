@@ -20,7 +20,7 @@ public class ItemVendaMapper {
         ItemVenda item = new ItemVenda();
         item.setProduto(produto);
         item.setQuantidade(dto.quantidade());
-        item.setPrecoUnitario(dto.precoUnitario());
+        item.setPrecoUnitario(produto.getPreco());
         item.setSubtotal(dto.precoUnitario().multiply(BigDecimal.valueOf(dto.quantidade())));
         return item;
     }

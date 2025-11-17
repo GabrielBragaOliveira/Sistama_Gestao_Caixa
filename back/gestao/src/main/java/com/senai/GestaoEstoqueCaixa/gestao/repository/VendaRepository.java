@@ -4,6 +4,9 @@
  */
 package com.senai.GestaoEstoqueCaixa.gestao.repository;
 
+import com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO;
+import com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO;
 import com.senai.GestaoEstoqueCaixa.gestao.entity.Venda;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,17 +23,56 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VendaRepository extends JpaRepository<Venda, Long> {
 
-    @Query("SELECT v FROM Venda v WHERE " +
-           "(:dataInicial IS NULL OR v.dataVenda >= :dataInicial) AND " +
-           "(:dataFinal IS NULL OR v.dataVenda <= :dataFinal) AND " +
-           "(:valorMin IS NULL OR v.valorTotal >= :valorMin) AND " +
-           "(:valorMax IS NULL OR v.valorTotal <= :valorMax) AND " +
-           "(:usuarioId IS NULL OR v.usuarioResponsavel.id = :usuarioId)")
-    List<Venda> filtrarVendas(
-        @Param("dataInicial") LocalDate dataInicial,
-        @Param("dataFinal") LocalDate dataFinal,
-        @Param("valorMin") BigDecimal valorMin,
-        @Param("valorMax") BigDecimal valorMax,
-        @Param("usuarioId") Long usuarioId
+    @Query("""
+        SELECT new com.senai.GestaoEstoqueCaixa.gestao.dto.RelatorioResumoVendaResponse(
+            v.id,
+            v.valorTotal,
+            v.dataVenda,
+            u.nome,
+            u.email
+        )
+        FROM Venda v
+        JOIN v.usuarioResponsavel u
+        WHERE
+            (:dataInicial IS NULL OR v.dataVenda >= :dataInicial) AND
+            (:dataFinal IS NULL OR v.dataVenda <= :dataFinal) AND
+            (:valorMin IS NULL OR v.valorTotal >= :valorMin) AND
+            (:valorMax IS NULL OR v.valorTotal <= :valorMax) AND
+            (:usuarioId IS NULL OR u.id = :usuarioId)
+    """)
+    List<RelatorioResumoVendaResponse> gerarRelatorioResumoComFiltros(
+            @Param("dataInicial") LocalDate dataInicial,
+            @Param("dataFinal") LocalDate dataFinal,
+            @Param("valorMin") BigDecimal valorMin,
+            @Param("valorMax") BigDecimal valorMax,
+            @Param("usuarioId") Long usuarioId
     );
+
+    @Query("""
+    SELECT new com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorOperadorResponseDTO(
+        u.id,
+        u.nome,
+        u.email,
+        COUNT(v.id),
+        SUM(v.valorTotal)
+    )
+        FROM Venda v
+        JOIN v.usuarioResponsavel u
+        GROUP BY u.id, u.nome, u.email
+        ORDER BY SUM(v.valorTotal) DESC
+    """)
+    List<VendasPorOperadorResponseDTO> relatorioVendasPorOperador();
+
+    @Query("""
+    SELECT new com.senai.GestaoEstoqueCaixa.gestao.dto.VendasPorMesResponseDTO(
+        EXTRACT(YEAR FROM v.dataVenda),
+        EXTRACT(MONTH FROM v.dataVenda),
+        COUNT(v.id),
+        SUM(v.valorTotal)
+    )
+        FROM Venda v
+        GROUP BY EXTRACT(YEAR FROM v.dataVenda), EXTRACT(MONTH FROM v.dataVenda)
+        ORDER BY EXTRACT(YEAR FROM v.dataVenda), EXTRACT(MONTH FROM v.dataVenda)
+    """)
+    List<VendasPorMesResponseDTO> relatorioVendasPorMes();
 }

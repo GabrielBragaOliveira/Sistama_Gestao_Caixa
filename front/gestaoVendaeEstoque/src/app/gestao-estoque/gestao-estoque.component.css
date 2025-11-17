@@ -4,7 +4,7 @@
 }
 
 .pesquisaBar {
-  background: #ffffff;
+  background: var(--surface-card);
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
@@ -18,31 +18,9 @@
 
 .filters {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 1.5rem; 
-}
-
-.filters span {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.filters label {
-  font-weight: 600;
-  color: #333;
-  font-size: 0.875rem;
-}
-
-:host ::ng-deep .filters .p-selectbutton .p-button {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-:host ::ng-deep .filters .p-inputtext {
-   padding: 0.5rem 0.75rem;
-   font-size: 0.875rem;
+  gap: 1.5rem;
 }
 
 :host ::ng-deep .p-table {
@@ -52,18 +30,18 @@
 }
 
 :host ::ng-deep .p-table .p-thead-r th {
-  background-color: #2ab3a3;
-  color: #ffffff;
+  background-color: var(--primary-color); 
+  color: var(--primary-color-text); 
   font-weight: 600;
   border: none;
 }
 
 :host ::ng-deep .p-table .p-tbody-r > tr:hover {
-  background-color: #f6f6f6;
+  background-color: var(--surface-hover);
 }
 
 :host ::ng-deep .p-table .p-tbody-r > tr > td {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--surface-border);
   padding: 0.8rem 1rem;
 }
 
@@ -75,20 +53,50 @@
 .summary {
   margin-top: 1rem;
   text-align: right;
-  color: #777;
+  color: var(--text-color-secondary);
   font-size: 0.875rem;
 }
 
-::ng-deep .p-dialog .p-dialog-content {
+::ng-deep .dialog-cadastro-transparente .p-dialog-content {
   background: transparent !important;
   box-shadow: none !important;
 }
 
-::ng-deep .p-dialog {
+::ng-deep .dialog-cadastro-transparente.p-dialog {
   box-shadow: none !important;
   background: transparent !important;
 }
 
-::ng-deep .p-dialog .p-dialog-header {
+::ng-deep .dialog-cadastro-transparente .p-dialog-header {
   display: none !important;
+}
+
+.p-input-icon-left > .p-inputtext {
+  min-width: 250px;
+}
+
+.col-quantidade {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-ajuste {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+.tipo-movimentacao {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.p-field-radiobutton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

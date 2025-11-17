@@ -24,7 +24,8 @@ public record MovimentoEstoqueRequestDTO(
         Integer quantidade,
 
         String motivo,
-
-        @NotNull(message = "O ID do usuário é obrigatório.")
+        
+        @NotNull(message = "O ID do usuario logado é obrigatório.")
         Long usuarioId
+
 ) {}

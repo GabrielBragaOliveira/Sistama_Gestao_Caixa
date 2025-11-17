@@ -25,7 +25,7 @@ public class Produto {
     private Long id;
     
     @Column(name = "codigo", nullable = false, unique = true)  
-    private String codigo;
+    private Integer codigo;
     
     @Column(name = "nome", nullable = false)
     private String nome;
@@ -90,11 +90,11 @@ public class Produto {
         this.ativo = ativo;
     }
 
-    public String getCodigo() {
+    public Integer getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Integer codigo) {
         this.codigo = codigo;
     }
     

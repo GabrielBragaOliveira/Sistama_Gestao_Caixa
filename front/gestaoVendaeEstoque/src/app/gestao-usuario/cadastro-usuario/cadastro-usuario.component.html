@@ -1,72 +1,67 @@
 <div class="card">
 
-      <h2>{{ isEdicao ? 'Formulario Editar Usuário' : 'Formulario Novo Usuário' }}</h2>
+  <h2>{{ isEdicao ? 'Formulario Editar Usuário' : 'Formulario Novo Usuário' }}</h2>
 
-      <form [formGroup]="formUsuario" (ngSubmit)="salvar()">
-        <div class="p-fluid">
+  <form [formGroup]="formUsuario" (ngSubmit)="salvar()">
+    <div class="p-fluid">
 
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-user"></i> <input pInputText formControlName="nome" placeholder="Nome" />
-            </span>
+      <div class="p-field">
+        <span class="p-input-icon-left">
+          <i class="pi pi-user"></i> <input pInputText formControlName="nome" placeholder="Nome" />
+        </span>
 
-            <div *ngIf="formUsuario.get('nome')?.invalid && (formUsuario.get('nome')?.dirty || formUsuario.get('nome')?.touched)" class="error-message">
-              <small *ngIf="formUsuario.get('nome')?.errors?.['required']"> Nome é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-envelope"></i> <input pInputText formControlName="email" placeholder="E-mail" type="email" />
-            </span>
-
-            <div *ngIf="formUsuario.get('email')?.invalid && (formUsuario.get('email')?.dirty || formUsuario.get('email')?.touched)"class="error-message">
-              <small *ngIf="formUsuario.get('email')?.errors?.['required']"> E-mail é obrigatório. </small>
-              <small *ngIf="formUsuario.get('email')?.errors?.['email']"> E-mail inválido. </small> 
-            </div>
-          </div>
-
-          <div class="p-field">
-            <label for="perfil">Perfil</label>
-            <p-selectButton formControlName="perfil" [options]="perfis" optionLabel="label" optionValue="value" class="perfil-select"></p-selectButton>
-          
-            <div *ngIf="formUsuario.get('perfil')?.invalid && (formUsuario.get('perfil')?.dirty || formUsuario.get('perfil')?.touched)" class="error-message" >
-              <small *ngIf="formUsuario.get('perfil')?.errors?.['required']"> Perfil é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="p-field">
-            <span class="p-input-icon-left">
-              <i class="pi pi-lock"></i>
-              <input
-                pInputText
-                formControlName="senha"
-                placeholder="Senha"
-                type="password"
-              />
-            </span>
-          
-            <div *ngIf="formUsuario.get('senha')?.invalid && (formUsuario.get('senha')?.dirty || formUsuario.get('senha')?.touched)"class="error-message">
-              <small *ngIf="formUsuario.get('senha')?.errors?.['required']"> Senha é obrigatório. </small>
-            </div>
-          </div>
-
-          <div class="botoes-acao">
-            <button
-              pButton
-              type="submit"
-              label="Salvar" class="p-button-success"
-              icon="pi pi-check" [disabled]="formUsuario.invalid"
-            ></button>
-
-            <button
-              pButton
-              type="button"
-              label="Cancelar"
-              class="p-button-secondary"
-              icon="pi pi-times" (click)="cancelar()"
-            ></button>
-          </div>
+        <div
+          *ngIf="formUsuario.get('nome')?.invalid && (formUsuario.get('nome')?.dirty || formUsuario.get('nome')?.touched)"
+          class="error-message">
+          <small *ngIf="formUsuario.get('nome')?.errors?.['required']"> Nome é obrigatório. </small>
         </div>
-      </form>
+      </div>
+
+      <div class="p-field">
+        <span class="p-input-icon-left">
+          <i class="pi pi-envelope"></i> <input pInputText formControlName="email" placeholder="E-mail" type="email" />
+        </span>
+
+        <div
+          *ngIf="formUsuario.get('email')?.invalid && (formUsuario.get('email')?.dirty || formUsuario.get('email')?.touched)"
+          class="error-message">
+          <small *ngIf="formUsuario.get('email')?.errors?.['required']"> E-mail é obrigatório. </small>
+          <small *ngIf="formUsuario.get('email')?.errors?.['email']"> E-mail inválido. </small>
+        </div>
+      </div>
+
+      <div class="p-field">
+        <label for="perfil">Perfil</label>
+        <p-selectButton formControlName="perfil" [options]="perfis" optionLabel="label" optionValue="value"
+          class="perfil-select"></p-selectButton>
+
+        <div
+          *ngIf="formUsuario.get('perfil')?.invalid && (formUsuario.get('perfil')?.dirty || formUsuario.get('perfil')?.touched)"
+          class="error-message">
+          <small *ngIf="formUsuario.get('perfil')?.errors?.['required']"> Perfil é obrigatório. </small>
+        </div>
+      </div>
+
+      <div class="p-field">
+        <span class="p-input-icon-left">
+          <i class="pi pi-lock"></i>
+          <input pInputText formControlName="senha" placeholder="Senha" type="password" />
+        </span>
+
+        <div
+          *ngIf="formUsuario.get('senha')?.invalid && (formUsuario.get('senha')?.dirty || formUsuario.get('senha')?.touched)"
+          class="error-message">
+          <small *ngIf="formUsuario.get('senha')?.errors?.['required']"> Senha é obrigatório. </small>
+        </div>
+      </div>
+
+      <div class="botoes-acao">
+        <button pButton type="submit" label="Salvar" class="p-button-success" icon="pi pi-check"
+          [disabled]="formUsuario.invalid"></button>
+
+        <button pButton type="button" label="Cancelar" class="p-button-secondary" icon="pi pi-times"
+          (click)="cancelar()"></button>
+      </div>
+    </div>
+  </form>
 </div>

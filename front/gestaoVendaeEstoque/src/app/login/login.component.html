@@ -1,6 +1,8 @@
 <p-toast></p-toast>
+
 <div class="login-container">
   <div class="login-card">
+
     <div class="login-left">
       <h2>Bem-vindo de volta!</h2>
       <p>Para continuar, faça login com suas credenciais.</p>
@@ -15,51 +17,38 @@
           <div class="p-field">
             <span class="p-input-icon-left">
               <i class="pi pi-envelope"></i>
-              <input
-                pInputText
-                formControlName="email"
-                placeholder="E-mail"
-                type="email"
-              />
+              <input pInputText formControlName="email" placeholder="E-mail" type="email" />
             </span>
           </div>
 
-          <div *ngIf="formLogin.get('email')?.invalid && (formLogin.get('email')?.dirty || formLogin.get('email')?.touched)"class="error-message">
+          <div
+            *ngIf="formLogin.get('email')?.invalid && (formLogin.get('email')?.dirty || formLogin.get('email')?.touched)"
+            class="error-message">
             <small *ngIf="formLogin.get('email')?.errors?.['required']">
-                E-mail é obrigatório.
+              E-mail é obrigatório.
             </small>
             <small *ngIf="formLogin.get('email')?.errors?.['email']">
-                E-mail inválido.
+              E-mail inválido.
             </small>
           </div>
-
-          
 
           <div class="p-field">
             <span class="p-input-icon-left">
               <i class="pi pi-lock"></i>
-              <input
-                pInputText
-                formControlName="senha"
-                placeholder="Senha"
-                type="password"
-              />
+              <input pInputText formControlName="senha" placeholder="Senha" type="password" />
             </span>
           </div>
 
-          <div *ngIf="formLogin.get('senha')?.invalid && (formLogin.get('senha')?.dirty || formLogin.get('senha')?.touched)"class="error-message">
+          <div
+            *ngIf="formLogin.get('senha')?.invalid && (formLogin.get('senha')?.dirty || formLogin.get('senha')?.touched)"
+            class="error-message">
             <small *ngIf="formLogin.get('senha')?.errors?.['required']">
-                Senha é obrigatório.
+              Senha é obrigatório.
             </small>
           </div>
 
-          <button
-            pButton
-            type="submit"
-            label="Entrar"
-            class="p-button-rounded p-button-success btn-login"
-            [disabled]="formLogin.invalid"
-          ></button>
+          <button pButton type="submit" label="Entrar" class="p-button-rounded btn-login"
+            [disabled]="formLogin.invalid"></button>
         </div>
       </form>
     </div>
