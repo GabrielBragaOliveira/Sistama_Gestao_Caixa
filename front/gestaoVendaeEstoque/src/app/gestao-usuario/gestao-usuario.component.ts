@@ -16,6 +16,7 @@ import { CadastroUsuarioComponent } from "./cadastro-usuario/cadastro-usuario.co
 import { finalize } from 'rxjs';
 import { DialogModule } from 'primeng/dialog';
 import { AuthService } from '../service/auth.service';
+import { ErrorHandlingService } from '../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-gestao-usuario',
@@ -64,6 +65,7 @@ export class GestaoUsuarioComponent implements OnInit {
     private msg: MessageService,
     private confirm: ConfirmationService,
     protected auth: AuthService,
+    private errorHandler: ErrorHandlingService 
   ) { }
 
   ngOnInit(): void {
@@ -84,9 +86,7 @@ export class GestaoUsuarioComponent implements OnInit {
       next: (lista) => {
         this.usuarios = lista;
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar os Usuarios' });
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     })
   }
 
@@ -114,10 +114,7 @@ export class GestaoUsuarioComponent implements OnInit {
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Usuario inativado' });
         this.onFiltroChange();
       },
-      error: () => {
-        this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível inativar' });
-        this.service.loading.set(false);
-      }
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
   }
 
@@ -144,4 +141,5 @@ export class GestaoUsuarioComponent implements OnInit {
     this.idEditando = null;
     this.onFiltroChange();
   }
+
 }

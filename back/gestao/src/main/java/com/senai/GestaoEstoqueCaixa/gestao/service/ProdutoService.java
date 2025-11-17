@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -52,7 +50,7 @@ public class ProdutoService {
 
     public ProdutoResponseDTO buscarPorCodigo(Integer codigo) {
         Produto produto = produtoRepository.findByCodigo(codigo)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
                 "Produto não encontrado com ID: " + codigo));
 
         return produtoMapper.toResponseDTO(produto);
@@ -99,6 +97,10 @@ public class ProdutoService {
 
         if (!produtoExistente.getAtivo()) {
             throw new RequisicaoInvalidaException("Somente produtos ativos podem ser editados.");
+        }
+
+        if (!produtoExistente.getCodigo().equals(dto.codigo())) {
+            throw new RequisicaoInvalidaException("O código do produto não pode ser alterado.");
         }
 
         if (dto.preco().compareTo(BigDecimal.ZERO) < 0) {

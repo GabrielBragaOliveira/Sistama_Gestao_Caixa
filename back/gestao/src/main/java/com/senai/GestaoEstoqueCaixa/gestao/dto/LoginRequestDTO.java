@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 
 /**
  *
- * @author CacatsViado
+ * @author Aluno
  */
 public record LoginRequestDTO(
 

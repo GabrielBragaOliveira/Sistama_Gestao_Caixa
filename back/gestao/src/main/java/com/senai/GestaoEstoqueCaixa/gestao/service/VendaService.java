@@ -23,7 +23,6 @@ import com.senai.GestaoEstoqueCaixa.gestao.repository.UsuarioRepository;
 import com.senai.GestaoEstoqueCaixa.gestao.repository.VendaRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

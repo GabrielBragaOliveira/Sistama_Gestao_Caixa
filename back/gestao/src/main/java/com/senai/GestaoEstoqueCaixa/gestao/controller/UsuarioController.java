@@ -56,9 +56,8 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> atualizar(@Valid
             @PathVariable Long id,
-            @RequestBody UsuarioRequestDTO dto,
-            @RequestBody String emailUsuarioLogado) {
-        UsuarioResponseDTO atualizado = usuarioService.atualizar(id, dto, emailUsuarioLogado);
+            @RequestBody UsuarioRequestDTO dto) {
+        UsuarioResponseDTO atualizado = usuarioService.atualizar(id, dto);
         return ResponseEntity.ok(atualizado);
     }
 
@@ -70,7 +69,7 @@ public class UsuarioController {
 
     
     @PostMapping("/login")
-    public ResponseEntity<UsuarioResponseDTO> login(@RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto) {
         UsuarioResponseDTO response = usuarioService.login(dto);
         return ResponseEntity.ok(response);
     }

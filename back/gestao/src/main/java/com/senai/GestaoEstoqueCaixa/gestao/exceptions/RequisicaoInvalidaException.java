@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class RequisicaoInvalidaException extends RuntimeException {
-
     //Erro 400 
     //Usada quando o cliente envia dados inválidos.
     public RequisicaoInvalidaException(String message) {

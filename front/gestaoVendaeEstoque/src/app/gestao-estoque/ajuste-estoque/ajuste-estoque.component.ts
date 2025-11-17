@@ -78,4 +78,5 @@ export class AjusteEstoqueComponent implements OnChanges {
   cancelar(): void {
     this.fechar.emit();
   }
+  
 }

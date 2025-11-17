@@ -4,6 +4,7 @@ import { UsuarioService } from './UsuarioService';
 import { MessageService } from 'primeng/api';
 import { UsuarioLogin, UsuarioResponse } from '../modelos/DTOs/UsuarioDTOs';
 import { finalize } from 'rxjs';
+import { ErrorHandlingService } from './ErrorHandlingService';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class AuthService {
   constructor(
     private router: Router,
     private service: UsuarioService,
-    private msg: MessageService
+    private msg: MessageService,
+    private errorHandler: ErrorHandlingService
   ) { }
 
   login(usuarioLogin: UsuarioLogin): void {
@@ -26,7 +28,7 @@ export class AuthService {
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: `Bem-vindo, ${usuario.nome}!` });
         this.router.navigate(['/relatorio']);
       },
-      error: (err) => this.tratarErroHttp(err)
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
   }
 
@@ -42,15 +44,5 @@ export class AuthService {
   sair(): void {
     localStorage.removeItem(this.USER_KEY);
     this.router.navigate(['/login']);
-  }
-
-  private tratarErroHttp(err: any) {
-    this.service.loading.set(false);
-    const status = err?.status;
-    if (status === 404) {
-      this.msg.add({ severity: 'error', summary: 'Erro ', detail: 'E-mail ou Senha não encontrado' });
-    } else {
-      this.msg.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao tentar fazer login. Verifique a sua conexão ou tente novamente mais tarde.' });
-    }
   }
 }
