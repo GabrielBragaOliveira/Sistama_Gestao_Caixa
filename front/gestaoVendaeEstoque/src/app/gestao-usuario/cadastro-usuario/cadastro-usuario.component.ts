@@ -141,11 +141,6 @@ export class CadastroUsuarioComponent implements OnInit, OnChanges {
       acao.pipe(finalize(() => this.service.loading.set(false))).subscribe({
         next: () => {
           this.msg.add({ severity: 'success', summary: 'Sucesso', detail: msgSucesso });
-          if (this.isEdicao) {
-            this.fechar.emit(true);
-          } else {
-            this.cancelar();
-          }
         },
         error: (err) => this.errorHandler.tratarErroHttp(err)
       });
