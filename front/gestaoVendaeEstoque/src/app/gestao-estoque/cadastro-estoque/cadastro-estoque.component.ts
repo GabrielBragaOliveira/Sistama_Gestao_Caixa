@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NgIf, CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
@@ -99,7 +98,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
       },
       error: (err) => {
         this.errorHandler.tratarErroHttp(err)
-        this.cancelar();
+        this.fechar.emit();
       }
     });
   }
@@ -133,7 +132,7 @@ export class CadastroEstoqueComponent implements OnInit, OnChanges {
         },
         error: (err) => {
           this.errorHandler.tratarErroHttp(err)
-          this.cancelar();
+          this.fechar.emit();
         }
       });
     }

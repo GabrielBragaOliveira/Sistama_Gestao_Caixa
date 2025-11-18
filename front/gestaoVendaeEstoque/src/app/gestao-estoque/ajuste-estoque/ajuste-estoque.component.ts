@@ -11,6 +11,7 @@ import { ProdutoResponse } from '../../modelos/DTOs/ProdutoDTO';
 import { finalize } from 'rxjs';
 import { EstoqueService } from '../../service/Estoque.service';
 import { AuthService } from '../../service/auth.service';
+import { ErrorHandlingService } from '../../service/ErrorHandlingService';
 
 @Component({
   selector: 'app-ajuste-estoque',
@@ -35,7 +36,8 @@ export class AjusteEstoqueComponent implements OnChanges {
     private auth: AuthService,
     private estoqueService: EstoqueService,
     private msg: MessageService,
-    private confirm: ConfirmationService
+    private confirm: ConfirmationService,
+    private errorHandler: ErrorHandlingService
   ) { }
 
   ngOnChanges(): void {
@@ -72,7 +74,7 @@ export class AjusteEstoqueComponent implements OnChanges {
         this.msg.add({ severity: 'success', summary: 'Sucesso', detail: 'Estoque atualizado.' });
         this.fechar.emit(true);
       },
-      error: (err) => this.msg.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao ajustar estoque.' })
+      error: (err) => this.errorHandler.tratarErroHttp(err)
     });
   }
 
